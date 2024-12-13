@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Panel de Administración</title>
+</head>
+<body>
+    <h1>Panel de Administración</h1>
+    <h1>  <a href="/admin">Salir</a> </h1>
+    {% if datos %}
+    <h2>Sensores Autenticados</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>id_sensor</th>
+                <th>usuario</th>
+                
+                
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for dato in datos %}
+                <tr>
+                    <td>{{ dato.id_sensor }}</td>
+                    <td>{{ dato.username_asociado }}</td>
+             
+
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No hay sensores autenticados en este momento.</p>
+{% endif %}
+</body>
+</html>

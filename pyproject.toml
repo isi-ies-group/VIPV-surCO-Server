@@ -1,0 +1,25 @@
+[project]
+name = "VIPV-Data-Crowdsourcing-Server"
+version = "0.1.0"
+description = "VIPV feasibility analysis via crowdsourced data - Server"
+dependencies = [
+    "flask",
+    "flask_wtf",
+    "flask_session",
+    "authlib",
+    "flask_sqlalchemy",
+]
+
+[project.optional-dependencies]
+dev = [
+    "flake8",
+    "Flake8-pyproject",
+    "ruff",
+]
+all = ["VIPV-Data-Crowdsourcing-Server[dev]"]
+
+[tool.ruff]
+line-length = 88
+
+[tool.flake8]
+max-line-length = 88

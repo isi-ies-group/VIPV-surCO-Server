@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<link rel="shortcut icon" href="{{ url_for('static', filename='images/iconardo.png') }}">
+
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="static/css/main.css" />
+    <noscript><link rel="stylesheet" href="static/css/noscript.css" /></noscript>
+    <style>
+     
+    #navGlobal {
+      position: relative;
+      top: 50%;
+      right: 0;
+      left: 0;
+      width: auto;
+      display: table;
+      margin: 0 auto;
+      transform: translateY(-50%);
+    }
+
+    #navGlobal a {
+      position: relative;
+      width: auto;
+      display: table-cell;
+      text-align: center;
+      color: #ffffff;
+      text-decoration: none;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      font-weight: bold;
+      padding: 10px 20px;
+      transition: 0.2s ease color;
+    }
+
+    #indicator {
+      position: absolute;
+      left: 5%;
+      bottom: 0;
+      width: 30px;
+      height: 3px;
+      background-color: #fff;
+      border-radius: 5px;
+      transition: 0.2s ease left;
+    }
+
+
+    #navGlobal a:nth-child(1):hover ~ #indicator {
+      left: 5%;
+      
+      background: linear-gradient(130deg, yellow, red);
+    }
+
+    #navGlobal a:nth-child(2):hover ~ #indicator {
+      left: 25%;
+   
+      background: linear-gradient(130deg, #00e2ff, #89ff00);
+    }
+
+    #navGlobal a:nth-child(3):hover ~ #indicator {
+      left: 52%;
+      
+      background: linear-gradient(130deg, purple, palevioletred)
+    }
+    #navGlobal a:nth-child(4):hover ~ #indicator {
+      left: 80%;
+     
+      background: linear-gradient(130deg, #00e2ff, #89ff00);
+    }
+  
+
+    .hidden {
+  display: none; /* Oculta el botón de inicio de sesión */
+}
+
+
+  </style>
+
+                
+    <header id="header">
+        <nav id="navGlobal">
+            <a href="/">Inicio</a>
+            <a href="/mapa">Mapa de Datos</a>
+            <a href="/leaderboard">Clasificación</a>
+            <a class="login hidden" id="loginButton" href="/login">Iniciar Sesión</a>
+            <div id="indicator"></div>
+          </nav>
+    </header>
+
+<body>
+    
+{% block content %}
+
+
+{% endblock %}
+</body>
+<body class="is-preload">
+  <div id="wrapper">
+    <footer id="footer">
+      <section>
+        <style>
+         
+        </style>
+         
+        <ul class="icons">
+          <li><a href="https://twitter.com/PhotovoltaWeb" class="icon brands fa-twitter alt"><span class="label">Twitter</span></a></li>
+          <li><a href="https://www.instagram.com/photovoltaweb/" class="icon brands fa-instagram alt"><span class="label">Instagram</span></a></li>
+          <li><a href="https://github.com/Maveru/Photovolta" class="icon brands fa-github alt"><span class="label">GitHub</span></a></li>
+        
+        </ul>
+      </section>
+      <p class="footer-text">
+        &copy; Untitled. 
+        Design: <a href="https://html5up.net">HTML5 UP</a>.
+      </p>
+    </footer>
+  </div>
+  
+		<!-- Scripts -->
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/jquery.scrollex.min.js"></script>
+    <script src="static/js/jquery.scrolly.min.js"></script>
+    <script src="static/js/browser.min.js"></script>
+    <script src="static/js/breakpoints.min.js"></script>
+    <script src="static/js/util.js"></script>
+    <script src="static/js/main.js"></script>
+
+</body>
+</html>
+
+
+<script>  
+
+// Obtiene el botón de inicio de sesión
+const loginButton = document.getElementById('loginButton');
+
+// Hacer una solicitud al servidor para verificar si el usuario está registrado
+fetch('/check_registration')  // Ruta Flask para verificar el registro
+  .then(response => response.json())
+  .then(data => {
+    if (data.isRegistered) {
+      loginButton.classList.remove('hidden'); // Muestra el botón
+      loginButton.innerHTML = '<a href="/profile">Mi Perfil</a>';
+    } else {
+      loginButton.classList.remove('hidden'); // Muestra el botón
+      loginButton.innerHTML = '<a href="/login">Iniciar Sesión</a>';
+    }
+  })
+  .catch(error => {
+    console.error('Error al verificar el registro:', error);
+  });
+
+const navLinks = document.querySelectorAll('#navGlobal a');
+const indicator = document.getElementById('indicator');
+
+navLinks.forEach((link) => {
+  link.addEventListener('click', (event) => {
+    event.preventDefault(); // Evita el comportamiento predeterminado del enlace
+    const selectedLink = event.target;
+    const linkRect = selectedLink.getBoundingClientRect();
+    const linkPosition = linkRect.left - navLinks[0].getBoundingClientRect().left;
+    const linkWidth = linkRect.width;
+    const indicatorPosition = linkPosition + (linkWidth / 2) - (indicator.offsetWidth / 2);
+
+    indicator.style.left = `${indicatorPosition}px`;
+
+    // Almacena la posición del enlace seleccionado en el almacenamiento local del navegador
+    localStorage.setItem('selectedLinkPosition', indicatorPosition);
+
+    // Realiza la redirección a la página asociada después de 500 ms (ajustable)
+    setTimeout(() => {
+      window.location.href = selectedLink.href;
+    }, 500);
+  });
+});
+
+// Verifica si hay una posición de enlace seleccionada almacenada y actualiza la posición del indicador en la carga de la página
+window.addEventListener('DOMContentLoaded', () => {
+  const storedPosition = localStorage.getItem('selectedLinkPosition');
+  if (storedPosition) {
+    indicator.style.left = `${storedPosition}px`;
+  }
+});
+
+
+</script>
