@@ -24,19 +24,6 @@ from werkzeug.utils import secure_filename
 import os
 from sqlalchemy.orm.exc import NoResultFound
 
-from flaskr.Epicollect_GetData import Epicollect_GetData
-from flaskr.MapMaker import MakeMap, MakeUserMap
-from flaskr.GraphMaker import GraphMaker
-from flaskr.Score import AsignarPuntos, calcular_puntuacion_entrada, calcular_distancia
-from flaskr.models import (
-    Comment,
-    User,
-    DatoSensor,
-    DatoPersona,
-    SensorAUT,
-    Badge,
-    UserBadge,
-)
 from flaskr.db_tables import (
     Base,
     UserCredentials,
@@ -343,9 +330,8 @@ def create_app(test_config=None):
             score_total=round(score_total, 2),
         )
 
-    @app.route("/mapa")  # Actualiza los datos de Epicollect y muestra el mapa
+    @app.route("/mapa")  # Actualiza muestra el mapa
     def mapa():
-        Epicollect_GetData()
         # Agregar codigo
         MakeMap()
         return render_template("mapa.html")
@@ -369,7 +355,6 @@ def create_app(test_config=None):
     def data(page=1):
         user = getUser()
         if user is not None:
-            Epicollect_GetData()
             per_page = 10
             total_entries = app.db.session.query(DatoPersona).count()
             total_pages = total_entries // per_page + (total_entries % per_page > 0)
@@ -390,7 +375,6 @@ def create_app(test_config=None):
 
     @app.route("/leaderboard")  # Muestra una clasificación de los usuarios
     def leaderboard():
-        Epicollect_GetData()
         users = app.db.session.query(User).all()
         logros = app.db.session.query(UserBadge).all()
         insignias = app.db.session.query(Badge).all()
