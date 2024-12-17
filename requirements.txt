@@ -14,6 +14,7 @@ matplotlib
 password_strength
 mpld3
 flask-jwt-extended
+flask_sqlalchemy
 werkzeug
 
 black
