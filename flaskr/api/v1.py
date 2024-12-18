@@ -1,5 +1,6 @@
 from flaskr.api import api_bp
 from flaskr.db_tables import UserCredentials, SessionFiles
+from flaskr.common import CredentialsValidator
 
 from flask import request, jsonify, current_app
 from flask_sqlalchemy import SQLAlchemy
@@ -80,6 +81,14 @@ def register():
 
     if not username or not passhash or not salt or not email:
         return jsonify({"message": "All fields are required"}), 400
+
+    # validate fields
+    if (
+        not CredentialsValidator.validate_username(username)
+        or not CredentialsValidator.validate_email(email)
+        or not CredentialsValidator.validate_password(passhash)
+    ):
+        return jsonify({"message": "Invalid fields"}), 400
 
     # find if the user already exists by username
     user = current_app.db.session.query(UserCredentials).filter_by(email=email).first()
