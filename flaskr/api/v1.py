@@ -12,6 +12,18 @@ from werkzeug.datastructures import FileStorage
 from pathlib import Path
 
 
+@api_bp.route("/isUp", methods=["GET"])
+def is_up():
+    """
+    Check if the API is up.
+
+    Returns
+    -------
+    200: API is up
+    """
+    return jsonify({"message": "API is up"}), 200
+
+
 @api_bp.route("/salt", methods=["GET"])
 def salt():
     """
