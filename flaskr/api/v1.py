@@ -1,7 +1,7 @@
-from flaskr.api import api_bp
 from flaskr.db_tables import UserCredentials, SessionFiles
 from flaskr.common import CredentialsValidator
 
+from flask.blueprints import Blueprint
 from flask import request, jsonify, current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
@@ -12,7 +12,11 @@ from werkzeug.datastructures import FileStorage
 from pathlib import Path
 
 
-@api_bp.route("/isUp", methods=["GET"])
+# Create a Blueprint for the API
+v1_bp = Blueprint('api', __name__)
+
+
+@v1_bp.route("/isUp", methods=["GET"])
 def is_up():
     """
     Check if the API is up.
@@ -24,7 +28,7 @@ def is_up():
     return jsonify({"message": "API is up"}), 200
 
 
-@api_bp.route("/salt", methods=["GET"])
+@v1_bp.route("/salt", methods=["GET"])
 def salt():
     """
     Get the salt for a user by email.
@@ -65,7 +69,7 @@ def salt():
     return jsonify({"passSalt": user.salt}), 200
 
 
-@api_bp.route("/register", methods=["POST"])
+@v1_bp.route("/register", methods=["POST"])
 def register():
     """
     Register a new user.
@@ -122,7 +126,7 @@ def register():
     return jsonify({"message": "User registered successfully"}), 201
 
 
-@api_bp.route("/login", methods=["POST"])
+@v1_bp.route("/login", methods=["POST"])
 def login():
     """
     Returns a token for the user if the credentials are correct.
@@ -181,7 +185,7 @@ def login():
     ), 200
 
 
-@api_bp.route("/session/upload", methods=["POST"])
+@v1_bp.route("/session/upload", methods=["POST"])
 @jwt_required()
 def upload_session_file():
     """
