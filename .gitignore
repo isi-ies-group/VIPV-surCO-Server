@@ -1,8 +1,8 @@
 # Ignore the session folder
 flask_session/
-# Ignore the secrets folder
-secrets/
-# But include the templates files in the secrets folder
+# Ignore the secrets folder files
+secrets/*
+# But include the template files in the secrets folder, which begin with template_
 !secrets/template_*
 
 # Byte-compiled / optimized / DLL files
