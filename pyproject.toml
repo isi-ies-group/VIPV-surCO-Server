@@ -3,11 +3,12 @@ name = "VIPV-Data-Crowdsourcing-Server"
 version = "0.1.0"
 description = "VIPV feasibility analysis via crowdsourced data - Server"
 dependencies = [
-    "flask",
-    "flask_wtf",
-    "flask_session",
-    "authlib",
-    "flask_sqlalchemy",
+    "Flask~=3.0.0",
+    "Flask-Session",
+    "Flask-SQLAlchemy",
+    "Flask-JWT-Extended",
+    "werkzeug",
+    "argon2-cffi",
 ]
 
 [project.optional-dependencies]
