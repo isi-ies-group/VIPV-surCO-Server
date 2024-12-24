@@ -108,7 +108,6 @@ def register():
         user_login_and_register.register_user(
             usermail=email,
             username=username,
-            password=None,
             passHash=passhash,
             salt=salt,
         )
