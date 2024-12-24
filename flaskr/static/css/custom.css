@@ -1,0 +1,351 @@
+/** Comes from original Photovolta by @Maveru **/
+
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 200px;
+    margin: 0 auto;
+    vertical-align: text-top;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 2%;
+    color: black
+}
+
+h2 {
+    margin-bottom: 0.5em;
+}
+
+p {
+    margin-bottom: 1em;
+}
+
+.info {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    color: black
+}
+
+.info p {
+    margin-bottom: 10px;
+    color: black
+}
+
+.info strong {
+    font-weight: bold;
+    color: black
+}
+
+.logout-form {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    color: rgb(104, 188, 228)
+}
+
+.logout-form button {
+    background-color: #4bcfc9;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    color: black
+}
+
+.logout-form button:hover {
+    background-color: #27df92;
+}
+
+.delete-form {
+
+    vertical-align: middle;
+}
+
+button {
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #4b84cf;
+}
+
+button:hover {
+    background-color: #4dacd1;
+}
+
+input[type="submit"] {
+    background-color: #4bcfc9;
+    color: #67468d;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+input[type="submit"]:hover {
+    background-color: #27df92;
+}
+
+
+
+.delete-form button {
+    background-color: #f15549;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    color: black
+}
+
+.delete-form button:hover {
+    background-color: #9c2323;
+    color: black
+}
+
+label,
+h2 {
+    border: black;
+    text-align: center;
+    color: black;
+    font-weight: bold;
+}
+
+.form-small {
+    justify-content: flex-end;
+    border: none;
+    box-shadow: none;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.form-small label {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-small input[type="file"] {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-small input[type="submit"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.8rem;
+    background-color: #4bcfc9;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.form-small input[type="submit"]:hover {
+    background-color: #27df92;
+}
+
+ul.mensajes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.mensajes li {
+    margin: 0;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.mensajes .success {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+}
+
+.mensajes .error {
+    background-color: #f44336;
+    color: white;
+}
+
+.mensajes .warning {
+    background-color: #ff9800;
+    color: white;
+}
+
+.mensajes .info {
+    background-color: #2196F3;
+    color: white;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    /* Ajustar el espacio entre los botones */
+}
+
+
+
+.vertical-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.vertical-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.info {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.horizontal-container {
+    display: flex;
+    justify-content: center;
+}
+
+/* Estilos del interruptor (toggle switch) */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked+.slider {
+    background-color: #2196F3;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Estilo para ocultar el formulario del interruptor */
+/* Estilos personalizados para el formulario del interruptor */
+.button2 {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+
+}
+
+.switch-form {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+}
+
+.switch-form .switch {
+    margin: 0;
+}
+
+.switch-form .slider {
+    background-color: #ccc;
+    /* Estilos adicionales para el switch */
+}
+
+.switch-form .slider:before {
+    background-color: white;
+    /* Estilos adicionales para el switch antes de */
+}
+
+.switch-container {
+    display: flex;
+    align-items: center;
+}
+
+.switch-form {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.switch-description {
+    margin-left: 10px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}

@@ -136,10 +136,10 @@
 const loginButton = document.getElementById('loginButton');
 
 // Hacer una solicitud al servidor para verificar si el usuario está registrado
-fetch('/check_registration')  // Ruta Flask para verificar el registro
+fetch('/isLoggedIn')  // Ruta Flask para verificar el registro
   .then(response => response.json())
   .then(data => {
-    if (data.isRegistered) {
+    if (data.result) {
       loginButton.classList.remove('hidden'); // Muestra el botón
       loginButton.innerHTML = '<a href="/profile">Mi Perfil</a>';
     } else {
