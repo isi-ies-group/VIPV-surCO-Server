@@ -1,6 +1,11 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import DeclarativeBase
 
+import re
+
+
+b64validator = re.compile(r"^[a-zA-Z0-9+/]*={0,2}$")
+
 
 class Base(DeclarativeBase):
     pass
@@ -32,6 +37,7 @@ class UserCredentials(Base):
     salt = Column(String(50), nullable=False)
 
     def __init__(self, username, email, passhash, salt):
+        assert b64validator.match(salt), "Invalid base64 salt"
         self.username = username
         self.email = email
         self.passhash = passhash

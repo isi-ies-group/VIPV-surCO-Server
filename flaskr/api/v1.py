@@ -1,17 +1,33 @@
-from flaskr.api import api_bp
 from flaskr.db_tables import UserCredentials, SessionFiles
+from flaskr.common import CredentialsValidator, user_login_and_register
 
+from flask.blueprints import Blueprint
 from flask import request, jsonify, current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 
 from pathlib import Path
 
 
-@api_bp.route("/salt", methods=["GET"])
+# Create a Blueprint for the API
+v1_bp = Blueprint("api", __name__)
+
+
+@v1_bp.route("/isUp", methods=["GET"])
+def is_up():
+    """
+    Check if the API is up.
+
+    Returns
+    -------
+    200: API is up
+    """
+    return jsonify({"message": "API is up"}), 200
+
+
+@v1_bp.route("/salt", methods=["GET"])
 def salt():
     """
     Get the salt for a user by email.
@@ -44,7 +60,7 @@ def salt():
         return jsonify({"message": "email is required"}), 400
 
     # get the salt for the user
-    user = sql_db.session.query(UserCredentials).filter_by(email=email).first()
+    user = sql_db.session.query(UserCredentials).filter_by(email=email.lower()).first()
 
     if not user:
         return jsonify({"message": "User not found"}), 404
@@ -52,7 +68,7 @@ def salt():
     return jsonify({"passSalt": user.salt}), 200
 
 
-@api_bp.route("/register", methods=["POST"])
+@v1_bp.route("/register", methods=["POST"])
 def register():
     """
     Register a new user.
@@ -81,32 +97,32 @@ def register():
     if not username or not passhash or not salt or not email:
         return jsonify({"message": "All fields are required"}), 400
 
-    # find if the user already exists by username
-    user = current_app.db.session.query(UserCredentials).filter_by(email=email).first()
-    if user:
+    # validate fields
+    if not CredentialsValidator.validate_username(
+        username
+    ) or not CredentialsValidator.validate_email(email):
+        return jsonify({"message": "Invalid fields"}), 400
+
+    # register the user
+    try:
+        user_login_and_register.register_user(
+            usermail=email,
+            username=username,
+            passHash=passhash,
+            salt=salt,
+        )
+    except ValueError:
         return jsonify({"message": "Email already registered"}), 409
-
-    # create a new user
-    new_user = UserCredentials(
-        username=username,
-        email=email,
-        passhash=generate_password_hash(passhash),
-        salt=salt,
-    )
-
-    # add the new user to the database
-    current_app.db.session.add(new_user)
-    current_app.db.session.commit()
 
     return jsonify({"message": "User registered successfully"}), 201
 
 
-@api_bp.route("/login", methods=["POST"])
+@v1_bp.route("/login", methods=["POST"])
 def login():
     """
     Returns a token for the user if the credentials are correct.
-    This token is valid for JWT_ACCESS_TOKEN_EXPIRES and is used to
-    authenticate the user. Validity is in seconds.
+    This token is valid for JWT_ACCESS_TOKEN_EXPIRES [seconds] and is used to
+    authenticate the user.
 
     Request data
     ------------
@@ -136,20 +152,15 @@ def login():
     if not email or not passhash:
         return jsonify({"message": "All fields are required"}), 400
 
-    # find the user by email
-    user: UserCredentials = (
-        current_app.db.session.query(UserCredentials).filter_by(email=email).first()
-    )
-
-    if not user:
+    try:
+        user = user_login_and_register.valid_login(email, passHash=passhash)
+    except TypeError:
         return jsonify({"message": "User not found"}), 404
-
-    # check if the passhash is correct
-    if check_password_hash(user.passhash, passhash):
+    except ValueError:
         return jsonify({"message": "Incorrect password"}), 401
 
     # create a random unique token for the user
-    access_token = create_access_token(identity=email, fresh=True)
+    access_token = create_access_token(identity=email.lower(), fresh=True)
 
     return jsonify(
         {
@@ -160,7 +171,7 @@ def login():
     ), 200
 
 
-@api_bp.route("/session/upload", methods=["POST"])
+@v1_bp.route("/session/upload", methods=["POST"])
 @jwt_required()
 def upload_session_file():
     """
@@ -170,7 +181,7 @@ def upload_session_file():
     email_identity = get_jwt_identity()
     user: UserCredentials = (
         current_app.db.session.query(UserCredentials)
-        .filter_by(email=email_identity)
+        .filter_by(email=email_identity.lower())
         .first()
     )
 

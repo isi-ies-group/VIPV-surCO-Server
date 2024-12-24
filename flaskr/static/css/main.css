@@ -377,10 +377,6 @@ input, select, textarea {
 		color: #ffffff;
 	}
 
-	strong, b {
-		color: #ffffff;
-	}
-
 	h1, h2, h3, h4, h5, h6 {
 		color: #ffffff;
 	}
@@ -1992,7 +1988,6 @@ input, select, textarea {
 	.button {
 		background-color: transparent;
 		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
-		color: #ffffff !important;
 	}
 
 		input[type="submit"]:hover,
