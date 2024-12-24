@@ -1,14 +1,19 @@
 from flaskr.web import web_bp
 from flaskr.db_tables import UserCredentials, SessionFiles
-from flaskr.common import CredentialsValidator
+from flaskr.common import CredentialsValidator, user_login_and_register
 
-from flask import render_template, request, redirect, url_for, session, current_app
+from flask import (
+    render_template,
+    request,
+    redirect,
+    session,
+    current_app,
+    jsonify,
+)
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import check_password_hash
-from argon2 import PasswordHasher, Type
 # import folium
 
-import os
+import traceback
 
 
 @web_bp.route("/", methods=["GET"])
@@ -19,14 +24,22 @@ def index():
     return render_template("index.html")
 
 
+@web_bp.route("/isLoggedIn", methods=["GET"])
+def is_logged_in():
+    """
+    Check if the user is logged in
+    """
+    return jsonify({"result": ("usermail" in session)}), 200
+
+
 @web_bp.route("/login", methods=["GET", "POST"])
 def login():
     """
     This function handles the login page
     """
     # Check if the user is already logged in
-    if "user_id" in session:
-        return redirect(url_for("web.profile"))
+    if "usermail" in session:
+        return redirect("/profile")
 
     if request.method == "GET":  # On GET request, return the login page
         return render_template("login.html")
@@ -35,28 +48,20 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
 
-        # access db property of the app
-        sql_db: SQLAlchemy = current_app.db
-
-        # Check if the user exists
-        user = sql_db.session.query(UserCredentials).filter_by(email=email).first()
-
-        # If the user does not exist, return an error
-        if user is None:
-            return render_template("login.html", error="Usuario no registrado")
-
-        # If the user exists, hash the password with user's salt
-        ph = PasswordHasher(time_cost=6, memory_cost=65536, type=Type.I)
-        passhash = ph.hash(password, salt=user.salt)
-
-        # Check if the password is correct
-        if passhash != user.passhash:
-            return render_template("login.html", error="Contraseña incorrecta")
+        # Validate login
+        try:
+            user = user_login_and_register.valid_login(email, password=password)
+        except ValueError:
+            print(traceback.format_exc())
+            return render_template("login.html", error_message="Contraseña incorrecta")
+        except TypeError:
+            print(traceback.format_exc())
+            return render_template("login.html", error_message="Usuario no registrado")
 
         # If the password is correct, log the user in
-        session["usermail"] = user.email  # TODO: may consider JWT instead
+        session["usermail"] = user.email.lower()  # TODO: may consider JWT instead
 
-        return redirect(url_for("web.profile"))
+        return redirect("/profile")
 
 
 @web_bp.route("/logout", methods=["GET", "POST"])
@@ -81,55 +86,41 @@ def signup():
     """
     # Check if the user is already logged in
     if "usermail" in session:
-        return redirect(url_for("web.profile"))
+        return redirect("/profile")
 
     if request.method == "GET":  # On GET request, return the register page
         return render_template("signup.html")
     elif request.method == "POST":  # On POST request, register the user
         # Get credentials from the form
-        email = request.form["email"]
+        email = request.form["email"].lower()
         password = request.form["password"]
         username = request.form["username"]
 
         # Validate credentials
         if not CredentialsValidator.validate_email(email):
-            return render_template("signup.html", error="Email inválido")
+            return render_template("signup.html", error_message="Email inválido")
 
         if not CredentialsValidator.validate_password(password):
-            return render_template("signup.html", error="Contraseña inválida")
+            return render_template("signup.html", error_message="Contraseña inválida")
 
         if not CredentialsValidator.validate_username(username):
-            return render_template("signup.html", error="Nombre de usuario inválido")
+            return render_template(
+                "signup.html", error_message="Nombre de usuario inválido"
+            )
 
-        # access db property of the app
-        sql_db: SQLAlchemy = current_app.db
-
-        # Check if the user already exists
-        user = sql_db.session.query(UserCredentials).filter_by(email=email).first()
-        if user is not None:
-            return render_template("signup.html", error="Email ya registrado")
-
-        # create random salt
-        salt = os.urandom(16)  # 16 bytes
-
-        # Hash the password
-        ph = PasswordHasher(time_cost=6, memory_cost=65536, type=Type.I)
-        passhash = ph.hash(password, salt=salt)
-
-        # Add the user to the database
-        new_user = UserCredentials(
-            email=email, passhash=passhash, username=username, salt=salt
-        )
-
-        # add the new user to the database
-        sql_db.session.add(new_user)
-        sql_db.session.commit()
+        # Create the user
+        try:
+            user_login_and_register.register_user(
+                usermail=email, username=username, password=password
+            )
+        except ValueError:
+            return render_template("signup.html", error_message="Email ya registrado")
 
         # Log the user in
         session["usermail"] = email
 
         # Redirect to the profile page
-        return redirect(url_for("web.profile"))
+        return redirect("/profile")
 
 
 @web_bp.route("/profile", methods=["GET"])
@@ -139,7 +130,7 @@ def profile():
     """
     # Check if the user is logged in
     if "usermail" not in session:
-        return redirect(url_for("web.login"))
+        return redirect("/login")
 
     # access db property of the app
     sql_db: SQLAlchemy = current_app.db
@@ -147,7 +138,7 @@ def profile():
     # Get the user's files
     user = (
         sql_db.session.query(UserCredentials)
-        .filter_by(email=session["usermail"])
+        .filter_by(email=session["usermail"].lower())
         .first()
     )
     n_files = sql_db.session.query(SessionFiles).filter_by(user_id=user.id).count()
@@ -164,7 +155,7 @@ def map():
     """
     # Check if the user is logged in
     if "usermail" not in session:
-        return redirect(url_for("web.login"))
+        return redirect("/login")
 
     return render_template("map.html")
 '''
