@@ -1,6 +1,8 @@
 Flask~=3.0.0
 Flask-Session
 Flask-SQLAlchemy
+psycopg2-binary
 Flask-JWT-Extended
 werkzeug
 argon2-cffi
+gunicorn

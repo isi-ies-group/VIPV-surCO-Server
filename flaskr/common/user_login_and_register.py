@@ -2,6 +2,7 @@ from flaskr.db_tables import UserCredentials
 
 from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
+import sqlalchemy
 from argon2 import PasswordHasher, Type
 
 import os
@@ -65,7 +66,7 @@ def register_user(
     username: str,
     *,
     password: str = None,
-    passHash=None,
+    passHash: str = None,
     salt: str = None,
 ) -> None:
     """
@@ -117,18 +118,20 @@ def register_user(
         # Encode the salt in base64
         print(f"Provided password, {salt=}")
         salt = base64.b64encode(salt).decode("utf-8")
-    elif passHash and salt:
-        pass
-    else:
-        assert False, "Either password or (passHash and salt) must be provided"
+    elif not (passHash and salt):
+        # password nor (passHash and salt) not provided
+        raise RuntimeError("Either password or (passHash and salt) must be provided")
 
     # Create the user
-    new_user = UserCredentials(
-        username=username,
-        email=usermail,
-        passhash=passHash,
-        salt=salt,
-    )
-    print(f"{passHash=}, {salt=}")
+    try:
+        new_user = UserCredentials(
+            username=username,
+            email=usermail,
+            passhash=passHash,
+            salt=salt,
+        )
+    except sqlalchemy.exc.DataError as e:
+        raise RuntimeError("Invalid data provided") from e
+
     sql_db.session.add(new_user)
     sql_db.session.commit()

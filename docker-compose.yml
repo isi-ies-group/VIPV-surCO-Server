@@ -1,0 +1,33 @@
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URI=postgresql://vipv_db_user:vipv_db_password@db:5432/vipv_db
+    depends_on:
+      db:
+        condition: service_healthy
+    links: 
+      - db
+  db:
+    image: postgres:17-alpine
+    container_name: db
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=vipv_db
+      - POSTGRES_USER=vipv_db_user
+      - POSTGRES_PASSWORD=vipv_db_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB -t 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - vipv-db:/data
+
+volumes:
+  vipv-db:

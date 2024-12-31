@@ -20,7 +20,7 @@ class UserCredentials(Base):
     id: Integer, primary key
     username: String, max length 15, not nullable
     email: String, max length 80, not nullable
-    passhash: String, max length 50, not nullable
+    passhash: String, max length 100, not nullable
     salt: String, max length 50, not nullable
 
     See also
@@ -33,7 +33,7 @@ class UserCredentials(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String(21), nullable=False)
     email = Column(String(80), nullable=False)
-    passhash = Column(String(50), nullable=False)
+    passhash = Column(String(100), nullable=False)
     salt = Column(String(50), nullable=False)
 
     def __init__(self, username, email, passhash, salt):
@@ -44,7 +44,7 @@ class UserCredentials(Base):
         self.salt = salt
 
     def __repr__(self):
-        return f"<User {self.id}>"
+        return f"<User {self.id} : {self.username} : {self.email}>"
 
 
 class SessionFiles(Base):
@@ -73,4 +73,4 @@ class SessionFiles(Base):
         self.filename = filename
 
     def __repr__(self):
-        return f"<File {self.id}>"
+        return f"<File {self.id} : {self.filename}>"
