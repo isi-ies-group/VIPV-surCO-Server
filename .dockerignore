@@ -1,5 +1,16 @@
+## Exclude files and directories specific to this project
+# Only keep dependencies requirements.txt
+requirements-dev.txt
+# Pinned dependencies, for failure tracing
+requirements-pinned.txt
+# Ignore the virtual environment
+venv/
+instance/
+flask_session/
+
+## Common dockerignore for base Python
 # Ignore Python cache files
-__pycache__/
+__pycache__
 *.pyc
 *.pyo
 
@@ -14,6 +25,7 @@ flask_session/
 # Ignore git files
 .git
 .gitignore
+.gitattributes
 
 # Ignore Dockerfile and docker-compose files
 Dockerfile
