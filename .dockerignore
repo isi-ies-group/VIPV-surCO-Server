@@ -10,7 +10,7 @@ flask_session/
 
 ## Common dockerignore for base Python
 # Ignore Python cache files
-__pycache__
+**/__pycache__
 *.pyc
 *.pyo
 
