@@ -52,10 +52,8 @@ def login():
         try:
             user = user_login_and_register.valid_login(email, password=password)
         except ValueError:
-            print(traceback.format_exc())
             return render_template("login.html", error_message="Contraseña incorrecta")
         except TypeError:
-            print(traceback.format_exc())
             return render_template("login.html", error_message="Usuario no registrado")
 
         # If the password is correct, log the user in

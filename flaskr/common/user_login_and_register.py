@@ -52,7 +52,6 @@ def valid_login(usermail: str, *, password=None, passHash=None) -> UserCredentia
         # with Argon2
         decoded_salt = base64.b64decode(user.salt)
         passHash = passwordHasher.hash(password, salt=decoded_salt)
-        print(f"{decoded_salt=}")
 
     # Check if the passHashes coincide
     if user.passhash == passHash:
@@ -116,7 +115,6 @@ def register_user(
         # with Argon2
         passHash = passwordHasher.hash(password, salt=salt)
         # Encode the salt in base64
-        print(f"Provided password, {salt=}")
         salt = base64.b64encode(salt).decode("utf-8")
     elif not (passHash and salt):
         # password nor (passHash and salt) not provided
