@@ -13,8 +13,6 @@ from flask import (
 from flask_sqlalchemy import SQLAlchemy
 # import folium
 
-import traceback
-
 
 @web_bp.route("/", methods=["GET"])
 def index():
