@@ -10,7 +10,7 @@ from flask import (
 )
 
 from flask_session import Session
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
 from flask_jwt_extended import JWTManager
 import os
 
@@ -31,8 +31,6 @@ from flaskr import api
 from flaskr import web
 
 from datetime import timedelta
-
-db = SQLAlchemy(model_class=Base)
 
 
 def create_app(test_config=None):
@@ -66,15 +64,15 @@ def create_app(test_config=None):
 
     # # Initialization of extensions
     # database initialization
-    app.db = db
-    app.db.init_app(app)
     with app.app_context():
         # ASSERT ALL MODELS ARE IMPORTED BEFORE CREATING ALL:
         # If you define models in submodules, you must import them so that SQLAlchemy
         # knows about them before calling create_all.
+        assert Base
         assert UserCredentials
         assert SessionFiles
-        app.db.create_all()
+        app.db = create_engine(app.config["SQLALCHEMY_DATABASE_URI"]).connect()
+        Base.metadata.create_all(app.db)
 
     # JWT manager
     app.jwt = JWTManager(app)

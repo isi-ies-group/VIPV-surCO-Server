@@ -10,7 +10,7 @@ from flask import (
     current_app,
     jsonify,
 )
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import Session
 # import folium
 
 
@@ -128,16 +128,17 @@ def profile():
     if "usermail" not in session:
         return redirect("/login")
 
-    # access db property of the app
-    sql_db: SQLAlchemy = current_app.db
-
-    # Get the user's files
-    user = (
-        sql_db.session.query(UserCredentials)
-        .filter_by(email=session["usermail"].lower())
-        .first()
-    )
-    n_files = sql_db.session.query(SessionFiles).filter_by(user_id=user.id).count()
+    with Session(current_app.db) as sql_db:
+        # Get the user's files
+        user = (
+            sql_db.query(UserCredentials)
+            .filter_by(email=session["usermail"].lower())
+            .first()
+        )
+        if user is None:
+            session.pop("usermail", default=None)
+            return redirect("/login")
+        n_files = sql_db.query(SessionFiles).filter_by(user_id=user.id).count()
 
     # TODO: add files to the template
     return render_template("profile.html", user=user, n_files=n_files)

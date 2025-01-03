@@ -3,7 +3,7 @@ from flaskr.common import CredentialsValidator, user_login_and_register
 
 from flask.blueprints import Blueprint
 from flask import request, jsonify, current_app
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import Session
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
@@ -50,17 +50,15 @@ def salt():
     400: email field is required
     404: User not found
     """
-    # access db property of the app
-    sql_db: SQLAlchemy = current_app.db
-
     data = request.headers
     email = data.get("email")
 
     if not email:
         return jsonify({"message": "email is required"}), 400
 
-    # get the salt for the user
-    user = sql_db.session.query(UserCredentials).filter_by(email=email.lower()).first()
+    with Session(current_app.db) as sql_db:
+        # get the salt for the user
+        user = sql_db.query(UserCredentials).filter_by(email=email.lower()).first()
 
     if not user:
         return jsonify({"message": "User not found"}), 404
@@ -179,11 +177,13 @@ def upload_session_file():
     This endpoint should be used with Content-Type: multipart/form-data.
     """
     email_identity = get_jwt_identity()
-    user: UserCredentials = (
-        current_app.db.session.query(UserCredentials)
-        .filter_by(email=email_identity.lower())
-        .first()
-    )
+
+    with Session(current_app.db) as sql_db:
+        user = (
+            sql_db.query(UserCredentials)
+            .filter_by(email=email_identity.lower())
+            .first()
+        )
 
     if not user:
         return jsonify({"message": "User not found"}), 400
@@ -217,7 +217,8 @@ def upload_session_file():
 
         # save the filename to the database
         new_file = SessionFiles(user.id, filename)
-        current_app.db.session.add(new_file)
-        current_app.db.session.commit()
+        with Session(current_app.db) as sql_db:
+            sql_db.add(new_file)
+            sql_db.commit()
 
         return jsonify({"message": "Session file uploaded successfully"}), 201
