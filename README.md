@@ -18,9 +18,7 @@ Server for a community-sourced photovoltaic data collection project.
 
 ## Docker development
 - Build and deploy the server:
-    ```bash
-    docker-compose up --build
-    ```
+    `docker compose up --build`
 
 ## Deployment
 In the development environment:
