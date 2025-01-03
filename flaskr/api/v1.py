@@ -1,5 +1,5 @@
 from flaskr.db_tables import UserCredentials, SessionFiles
-from flaskr.common import CredentialsValidator, user_login_and_register
+from flaskr.common import CredentialsValidator, user_login_signin
 
 from flask.blueprints import Blueprint
 from flask import request, jsonify, current_app
@@ -103,7 +103,7 @@ def register():
 
     # register the user
     try:
-        user_login_and_register.register_user(
+        user_login_signin.register_user(
             usermail=email,
             username=username,
             passHash=passhash,
@@ -151,7 +151,7 @@ def login():
         return jsonify({"message": "All fields are required"}), 400
 
     try:
-        user = user_login_and_register.valid_login(email, passHash=passhash)
+        user = user_login_signin.valid_login(email, passHash=passhash)
     except TypeError:
         return jsonify({"message": "User not found"}), 404
     except ValueError:
