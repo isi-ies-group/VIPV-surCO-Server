@@ -17,13 +17,13 @@ if SECRET_KEY is None:
     SECRET_KEY = "dev"
 
 # Secret key for the JWT tokens
-JWT_SECRET_KEY = os.environ.get("JWT_SECRET", default=None)
+JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", default=None)
 if JWT_SECRET_KEY is None:
     # create a random secret key, for all the workers to share
     # lock for the creation of the secret key
     warn(
         "Configuration pending: No JWT secret key found.\n"
-        + "    Set with JWT_SECRET=<key>"
+        + "    Set with JWT_SECRET_KEY=<key>"
     )
     JWT_SECRET_KEY = "dev"
 
