@@ -42,6 +42,6 @@ elif DATABASE_URI := os.environ.get("DATABASE_URI", default=None):
 else:
     warn(
         "Configuration pending: No database URI found.\n"
-        + "    Set with DATABASE_URI=<uri> or in secrets.toml"
+        + "    Set with DATABASE_URI=<uri>"
     )
-    DATABASE_URI = "postgresql:///flaskr.db"
+    DATABASE_URI = "sqlite:///instance/flaskr.db"
