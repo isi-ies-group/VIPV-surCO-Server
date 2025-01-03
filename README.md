@@ -44,5 +44,5 @@ In the production environment:
     `sed -i "s/build: .*/image: echedeyls\/vipv-acquisition-server:$TAG/" docker-compose.yml`
     - Change the environment variables to the ones you want to use.
 4. Run the server
-    `docker-compose -f docker-compose.yml up -d`
+    `docker compose -f docker-compose.yml up -d`
 
