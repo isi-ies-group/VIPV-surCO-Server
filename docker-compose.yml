@@ -2,23 +2,31 @@ x-db-env: &x-db-env
   POSTGRES_DB: vipv_db
   POSTGRES_USER: vipv_db_user
   POSTGRES_PASSWORD: vipv_db_password
-  # Port is constant for the postgres container
-  DATABASE_URI: "postgresql://vipv_db_user:vipv_db_password@db:5432/vipv_db"
+  # POSTGRES_HOST: ignored in the db service, but used in the web service
+  # to form the connection string. Matches the service name of the db service.
+  POSTGRES_HOST: db
 
 x-web-env: &x-web-env
   SECRET_KEY: "my_precious_secret_key"
+  JWT_SECRET_KEY: "my_precious_overshared_key"
 
 services:
   web:
     build: .
+    container_name: web
     ports:
       - "5000:5000"
     environment:
       <<: [*x-db-env, *x-web-env]
+    volumes:
+      # This line mounts a directory from your host machine (~/server/sessions) to a directory inside the container (/vipv-server/instance/sessions).
+      # This is useful for persisting data or sharing files between the host and the container.
+      # The expected files you will be able to find here are the session files uploaded by the users with the log of the beacons.
+      - ~/server/sessions:/vipv-server/instance/sessions
     depends_on:
       db:
         condition: service_healthy
-    links: 
+    links:
       - db
   db:
     image: postgres:17-alpine

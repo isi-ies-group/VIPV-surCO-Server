@@ -19,12 +19,9 @@ from flaskr.db_tables import (
     UserCredentials,
     SessionFiles,
 )
-from flaskr.claves import (
-    claveTokens,
-    GOOGLE_ID,
-    GOOGLE_SECRET,
-    admin_pass,
+from flaskr.env_config import (
     SECRET_KEY,
+    JWT_SECRET_KEY,
     DATABASE_URI,
 )
 from flaskr import api
@@ -39,7 +36,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY=SECRET_KEY,  # secret key for sessions
-        JWT_SECRET_KEY=claveTokens,  # secret key to sign JWT -- secrets.token_hex(32)
+        JWT_SECRET_KEY=JWT_SECRET_KEY,  # secret key to sign JWT tokens
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(minutes=30),  # token expiration time
         SQLALCHEMY_DATABASE_URI=DATABASE_URI,  # database URI
     )
@@ -59,8 +56,8 @@ def create_app(test_config=None):
     app.config["SESSION_TYPE"] = "filesystem"
 
     # required to use Google OAuth
-    app.config["GOOGLE_ID"] = GOOGLE_ID
-    app.config["GOOGLE_SECRET"] = GOOGLE_SECRET
+    # app.config["GOOGLE_ID"] = GOOGLE_ID
+    # app.config["GOOGLE_SECRET"] = GOOGLE_SECRET
 
     # # Initialization of extensions
     # database initialization
@@ -97,7 +94,7 @@ def create_app(test_config=None):
             # El usuario no está autenticado, verificar la contraseña
             if request.method == "POST":
                 password = request.form["password"]
-                if password == admin_pass:
+                if password == SECRET_KEY:  # TODO: change to a different password
                     session["authenticated"] = True
                     return redirect(url_for("admin"))
                 else:

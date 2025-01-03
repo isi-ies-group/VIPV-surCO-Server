@@ -1,6 +1,6 @@
 from flaskr.web import web_bp
 from flaskr.db_tables import UserCredentials, SessionFiles
-from flaskr.common import CredentialsValidator, user_login_and_register
+from flaskr.common import CredentialsValidator, user_login_signin
 
 from flask import (
     render_template,
@@ -48,7 +48,7 @@ def login():
 
         # Validate login
         try:
-            user = user_login_and_register.valid_login(email, password=password)
+            user = user_login_signin.valid_login(email, password=password)
         except ValueError:
             return render_template("login.html", error_message="Contraseña incorrecta")
         except TypeError:
@@ -106,7 +106,7 @@ def signup():
 
         # Create the user
         try:
-            user_login_and_register.register_user(
+            user_login_signin.register_user(
                 usermail=email, username=username, password=password
             )
         except ValueError:

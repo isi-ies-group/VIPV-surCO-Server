@@ -3,7 +3,7 @@
 requirements-dev.txt
 # Pinned dependencies, for failure tracing
 requirements-pinned.txt
-# Ignore the virtual environment
+# Ignore the virtual environment and local runs
 venv/
 instance/
 flask_session/

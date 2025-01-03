@@ -10,7 +10,7 @@ Server for a community-sourced photovoltaic data collection project.
     python -m pip install -r requirements-dev.txt
     ```
     Other Python versions may work too.
-2. Rename `secrets/template_secrets.toml` to `secrets/secrets.toml` and modify as needed.
+2. For development, you may not need to set environment variables, but keep in mind they are heavily used in the Docker configuration for local testing and deployment.
 3. Run the server for debugging:
     ```bash
     python -m flask --app flaskr run --host=0.0.0.0 --debug
@@ -18,9 +18,7 @@ Server for a community-sourced photovoltaic data collection project.
 
 ## Docker development
 - Build and deploy the server:
-    ```bash
-    docker-compose up --build
-    ```
+    `docker compose up --build`
 
 ## Deployment
 In the development environment:
