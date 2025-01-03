@@ -1,7 +1,8 @@
 from flaskr.db_tables import UserCredentials
 
 from flask import current_app
-from flask_sqlalchemy import SQLAlchemy
+import sqlalchemy
+from sqlalchemy.orm import Session
 from argon2 import PasswordHasher, Type
 
 import os
@@ -37,11 +38,13 @@ def valid_login(usermail: str, *, password=None, passHash=None) -> UserCredentia
     ValueError
         If the password is invalid.
     """
-    sql_db: SQLAlchemy = current_app.db
     usermail = usermail.lower()
 
     # Get the user's salt from the database
-    user = sql_db.session.query(UserCredentials).filter_by(email=usermail).first()
+    with Session(current_app.db) as sql_db:
+        # get the salt for the user
+        user = sql_db.query(UserCredentials).filter_by(email=usermail).first()
+
     if user is None:  # User not found
         raise TypeError("User is not registered")
 
@@ -51,7 +54,6 @@ def valid_login(usermail: str, *, password=None, passHash=None) -> UserCredentia
         # with Argon2
         decoded_salt = base64.b64decode(user.salt)
         passHash = passwordHasher.hash(password, salt=decoded_salt)
-        print(f"{decoded_salt=}")
 
     # Check if the passHashes coincide
     if user.passhash == passHash:
@@ -65,7 +67,7 @@ def register_user(
     username: str,
     *,
     password: str = None,
-    passHash=None,
+    passHash: str = None,
     salt: str = None,
 ) -> None:
     """
@@ -91,14 +93,12 @@ def register_user(
     AssertionError
         If both password and (passHash or salt) is provided.
     """
-    sql_db: SQLAlchemy = current_app.db
     usermail = usermail.lower()
 
     # Check if the user already exists
-    if (
-        sql_db.session.query(UserCredentials).filter_by(email=usermail).first()
-        is not None
-    ):
+    with Session(current_app.db) as sql_db:
+        user = sql_db.query(UserCredentials).filter_by(email=usermail).first()
+    if user is not None:
         raise ValueError("User already exists")
 
     # If the password is provided, create a salt and hash it
@@ -115,20 +115,22 @@ def register_user(
         # with Argon2
         passHash = passwordHasher.hash(password, salt=salt)
         # Encode the salt in base64
-        print(f"Provided password, {salt=}")
         salt = base64.b64encode(salt).decode("utf-8")
-    elif passHash and salt:
-        pass
-    else:
-        assert False, "Either password or (passHash and salt) must be provided"
+    elif not (passHash and salt):
+        # password nor (passHash and salt) not provided
+        raise RuntimeError("Either password or (passHash and salt) must be provided")
 
     # Create the user
-    new_user = UserCredentials(
-        username=username,
-        email=usermail,
-        passhash=passHash,
-        salt=salt,
-    )
-    print(f"{passHash=}, {salt=}")
-    sql_db.session.add(new_user)
-    sql_db.session.commit()
+    try:
+        new_user = UserCredentials(
+            username=username,
+            email=usermail,
+            passhash=passHash,
+            salt=salt,
+        )
+    except sqlalchemy.exc.DataError as e:
+        raise RuntimeError("Invalid data provided") from e
+
+    with Session(current_app.db) as sql_db:
+        sql_db.add(new_user)
+        sql_db.commit()

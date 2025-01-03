@@ -1,0 +1,39 @@
+x-db-env: &x-db-env
+  POSTGRES_DB: vipv_db
+  POSTGRES_USER: vipv_db_user
+  POSTGRES_PASSWORD: vipv_db_password
+  # Port is constant for the postgres container
+  DATABASE_URI: "postgresql://vipv_db_user:vipv_db_password@db:5432/vipv_db"
+
+x-web-env: &x-web-env
+  SECRET_KEY: "my_precious_secret_key"
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      <<: [*x-db-env, *x-web-env]
+    depends_on:
+      db:
+        condition: service_healthy
+    links: 
+      - db
+  db:
+    image: postgres:17-alpine
+    container_name: db
+    restart: always
+    environment:
+      <<: *x-db-env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB -t 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - vipv-db:/data
+
+volumes:
+  vipv-db:

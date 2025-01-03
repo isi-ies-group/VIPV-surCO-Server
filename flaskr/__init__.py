@@ -10,7 +10,7 @@ from flask import (
 )
 
 from flask_session import Session
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
 from flask_jwt_extended import JWTManager
 import os
 
@@ -19,7 +19,14 @@ from flaskr.db_tables import (
     UserCredentials,
     SessionFiles,
 )
-from flaskr.claves import claveTokens, GOOGLE_ID, GOOGLE_SECRET, admin_pass
+from flaskr.claves import (
+    claveTokens,
+    GOOGLE_ID,
+    GOOGLE_SECRET,
+    admin_pass,
+    SECRET_KEY,
+    DATABASE_URI,
+)
 from flaskr import api
 from flaskr import web
 
@@ -31,13 +38,10 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY="dev",
-        DATABASE=os.path.join(app.instance_path, "flaskr.sqlite"),
+        SECRET_KEY=SECRET_KEY,  # secret key for sessions
         JWT_SECRET_KEY=claveTokens,  # secret key to sign JWT -- secrets.token_hex(32)
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(minutes=30),  # token expiration time
-        SQLALCHEMY_DATABASE_URI=(
-            "sqlite:///VIPV_Data_Crowdsourcing_Program.sqlite"
-        ),
+        SQLALCHEMY_DATABASE_URI=DATABASE_URI,  # database URI
     )
 
     if test_config is None:
@@ -49,16 +53,10 @@ def create_app(test_config=None):
 
     # ensure the instance folder exists
     if not os.path.exists(app.instance_path):
-        os.makedirs(app.instance_path)
+        os.makedirs(app.instance_path, exist_ok=True)
 
     # configuration
-    UPLOAD_FOLDER = "static/datosFoto/"  # Para guardar las imagenes enviadas
-
-    app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
     app.config["SESSION_TYPE"] = "filesystem"
-    app.config["PFP_UPLOAD_FOLDER"] = (
-        "static/userpfp/"  # Para almacenar las imagenes de perfil
-    )
 
     # required to use Google OAuth
     app.config["GOOGLE_ID"] = GOOGLE_ID
@@ -66,14 +64,15 @@ def create_app(test_config=None):
 
     # # Initialization of extensions
     # database initialization
-    app.db = SQLAlchemy(app, model_class=Base)
     with app.app_context():
         # ASSERT ALL MODELS ARE IMPORTED BEFORE CREATING ALL:
         # If you define models in submodules, you must import them so that SQLAlchemy
         # knows about them before calling create_all.
+        assert Base
         assert UserCredentials
         assert SessionFiles
-        app.db.create_all()
+        app.db = create_engine(app.config["SQLALCHEMY_DATABASE_URI"]).connect()
+        Base.metadata.create_all(app.db)
 
     # JWT manager
     app.jwt = JWTManager(app)
