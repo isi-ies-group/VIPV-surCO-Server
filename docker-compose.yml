@@ -22,7 +22,7 @@ services:
       # This line mounts a directory from your host machine (~/server/sessions) to a directory inside the container (/vipv-server/instance/sessions).
       # This is useful for persisting data or sharing files between the host and the container.
       # The expected files you will be able to find here are the session files uploaded by the users with the log of the beacons.
-      - ~/server/sessions:/vipv-server/instance/sessions
+      - /home/vipv-user/sessions:/vipv-server/instance/sessions
     depends_on:
       db:
         condition: service_healthy

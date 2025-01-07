@@ -10,13 +10,15 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Create the user and group to run the application
-RUN addgroup -S vipv-server && adduser -S vipv-server -G vipv-server
+RUN addgroup --system vipv-group --gid 5001
+RUN adduser --system vipv-user --ingroup vipv-group --uid 5001
 
 # Create the directory and set the ownership to the user
-RUN mkdir /vipv-server && chown vipv-server:vipv-server /vipv-server
+RUN mkdir --parents /vipv-server
+RUN chown vipv-user:vipv-group /vipv-server
 
 # Switch to the user
-USER vipv-server
+USER vipv-user
 
 # Set the working directory in the container
 WORKDIR /vipv-server
@@ -24,8 +26,14 @@ WORKDIR /vipv-server
 # Copy the rest of the application code into the container
 COPY . .
 
-# Ensure the instance folder exists
-RUN mkdir -p instance
+# Ensure the instance/sessions folder exists
+RUN mkdir --parents instance/sessions
+
+# Set permissions so the user can write and create subdirectories
+RUN chmod 744 instance
+
+# Define the volume
+VOLUME ["/vipv-server/instance/sessions"]
 
 # Expose the port the app runs on
 EXPOSE 5000
