@@ -1,0 +1,40 @@
+{% extends "nav.html" %}
+{% block title %}Contáctanos{% endblock %}
+{% block content %}
+<link rel="shortcut icon" href="{{ url_for('static', filename='images/iconardo.png') }}">
+
+<html>
+<header>
+	<h1>Contáctanos</h1>
+	<p></p>
+</header>
+
+<body>
+	<!-- Main -->
+	<div id="main">
+		<!-- Introduction -->
+		<section id="intro" class="main">
+			<header class="major">
+				<h2>¿Necesitas soporte con alguno de nuestros softwares?</h2>
+			</header>
+			<div>
+				<div class="content">
+					<p>Si has encontrado un bug o quieres sugerir algún cambio en la aplicación de Android, puedes
+						acceder al siguiente repositorio:</p>
+					<a href="https://github.com/isi-ies-group/VIPV-Data-Crowdsourcing-Client"
+						target="_blank">Repositorio del cliente en GitHub</a>
+					<p>Si has encontrado un bug o quieres sugerir algún cambio en el servidor, puedes acceder al
+						siguiente repositorio:</p>
+					<a href="https://github.com/isi-ies-group/VIPV-Data-Crowdsourcing-Server"
+						target="_blank">Repositorio del servidor en GitHub</a>
+					<p>Si tienes alguna otra duda o sugerencia, puedes contactarnos a través del siguiente correo
+						electrónico:</p>
+					<p><a href="mailto:echedey.luis.alvarez@upm.es">echedey.luis.alvarez@upm.es</a></p>
+				</div>
+			</div>
+		</section>
+</body>
+
+</html>
+
+{% endblock %}
