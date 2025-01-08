@@ -62,8 +62,12 @@ In the production environment:
 5. Run the server
     `docker compose -f docker-compose.yml up -d`
 
-## Updating the web server
-1. Pull the image
-    `docker pull echedeyls/vipv-acquisition-server:latest`
-2. Restart the server
-    `docker compose -f docker-compose.yml down && docker compose -f docker-compose.yml up -d`
+## Updating the web server (assuming the `docker-compose.yml` file was not modified)
+```bash
+su vipv-user
+cd ~
+# Pull the image
+docker pull echedeyls/vipv-acquisition-server:latest
+# Restart the server with the new image
+docker compose -f docker-compose.yml up -d
+```
