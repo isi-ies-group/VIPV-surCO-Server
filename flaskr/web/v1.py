@@ -10,7 +10,6 @@ from flask import (
     current_app,
     jsonify,
 )
-from sqlalchemy.orm import Session
 # import folium
 
 
@@ -128,7 +127,7 @@ def profile():
     if "usermail" not in session:
         return redirect("/login")
 
-    with Session(current_app.db) as sql_db:
+    with current_app.Session() as sql_db:
         # Get the user's files
         user = (
             sql_db.query(UserCredentials)

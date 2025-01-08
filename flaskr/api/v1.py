@@ -3,7 +3,6 @@ from flaskr.common import CredentialsValidator, user_login_signin
 
 from flask.blueprints import Blueprint
 from flask import request, jsonify, current_app
-from sqlalchemy.orm import Session
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
@@ -56,7 +55,7 @@ def salt():
     if not email:
         return jsonify({"message": "email is required"}), 400
 
-    with Session(current_app.db) as sql_db:
+    with current_app.Session() as sql_db:
         # get the salt for the user
         user = sql_db.query(UserCredentials).filter_by(email=email.lower()).first()
 
@@ -178,7 +177,7 @@ def upload_session_file():
     """
     email_identity = get_jwt_identity()
 
-    with Session(current_app.db) as sql_db:
+    with current_app.Session() as sql_db:
         user = (
             sql_db.query(UserCredentials)
             .filter_by(email=email_identity.lower())
@@ -217,7 +216,7 @@ def upload_session_file():
 
         # save the filename to the database
         new_file = SessionFiles(user.id, filename)
-        with Session(current_app.db) as sql_db:
+        with current_app.Session() as sql_db:
             sql_db.add(new_file)
             sql_db.commit()
 

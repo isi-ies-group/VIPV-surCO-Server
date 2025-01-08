@@ -46,19 +46,24 @@ Another user, `vipv-user`, is created to own the volume where the data sessions 
     sudo chown -R vipv-user:vipv-group /home/vipv-user/sessions
     ```
 
-## Deployment
+## Deployment (if `docker-compose.yml` was modified)
 In the production environment:
-0. Log in to the user that will run the server
+
+1. Log in to the user that will run the server
     `su vipv-user`
-1. Set the latest tag from the Docker Hub repository
-    `TAG=0.0.1`
 2. Pull the image
-    `docker pull echedeyls/vipv-acquisition-server:$TAG`
+    `docker pull echedeyls/vipv-acquisition-server:latest`
 3. Clone the `docker-compose.yml` file from the repository:
-    `wget https://raw.githubusercontent.com/isi-ies-group/VIPV-Data-Crowdsourcing-Server/refs/heads/main/docker-compose.yml`
+    `cd ~ && wget https://raw.githubusercontent.com/isi-ies-group/VIPV-Data-Crowdsourcing-Server/refs/heads/main/docker-compose.yml -O docker-compose.yml`
 4. Modify the `docker-compose.yml` file:
-    - Change the `build: .` key to `image: echedeyls/vipv-acquisition-server:$TAG` to set the image to the one you just pulled. You can do this with the following command:
-    `sed -i "s/build: .*/image: echedeyls\/vipv-acquisition-server:$TAG/" docker-compose.yml`
+    - Change the `build: .` key to `image: echedeyls/vipv-acquisition-server:latest` to set the image to the one you just pulled. You can do this with the following command:
+    `sed -i "s/build: .*/image: echedeyls\/vipv-acquisition-server:latest/" docker-compose.yml`
     - Change the environment variables to the ones you want to use.
 5. Run the server
-    `sudo docker compose -f docker-compose.yml up -d`
+    `docker compose -f docker-compose.yml up -d`
+
+## Updating the web server
+1. Pull the image
+    `docker pull echedeyls/vipv-acquisition-server:latest`
+2. Restart the server
+    `docker compose -f docker-compose.yml down && docker compose -f docker-compose.yml up -d`

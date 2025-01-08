@@ -1,3 +1,5 @@
+name: vipv-server
+
 x-db-env: &x-db-env
   POSTGRES_DB: vipv_db
   POSTGRES_USER: vipv_db_user
@@ -19,7 +21,7 @@ services:
     environment:
       <<: [*x-db-env, *x-web-env]
     volumes:
-      # This line mounts a directory from your host machine (~/server/sessions) to a directory inside the container (/vipv-server/instance/sessions).
+      # This line mounts a directory from your host machine (/home/vipv-user/sessions) to a directory inside the container (/vipv-server/instance/sessions).
       # This is useful for persisting data or sharing files between the host and the container.
       # The expected files you will be able to find here are the session files uploaded by the users with the log of the beacons.
       - /home/vipv-user/sessions:/vipv-server/instance/sessions
@@ -41,7 +43,8 @@ services:
       retries: 5
       start_period: 10s
     volumes:
-      - vipv-db:/data
+      # Do not change the path; see PGDATA at https://hub.docker.com/_/postgres
+      - db:/var/lib/postgresql/data
 
 volumes:
-  vipv-db:
+  db:

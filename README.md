@@ -21,14 +21,12 @@ Server for a community-sourced photovoltaic data collection project.
     `docker compose up --build`
 
 ## Deployment
-In the development environment:
-1. Set a tag
-	`TAG=0.0.1`
-3. Build image (from Linux / WSL)
-	From project root (where Dockerfile is)
-	`docker build -t echedeyls/vipv-acquisition-server:$TAG .`
-4. Push to DockerHub repository
-	`docker push echedeyls/vipv-acquisition-server:$TAG`
+In the development environment, at project root (where Dockerfile is):
+
+1. Build image (from Linux / WSL)
+	`docker build -t echedeyls/vipv-acquisition-server:latest .`
+2. Push to DockerHub repository
+	`docker push echedeyls/vipv-acquisition-server:latest`
 
 Follow the instructions in the `README_SERVER.md` file to deploy the server in a remote server.
 
@@ -39,3 +37,5 @@ Follow the instructions in the `README_SERVER.md` file to deploy the server in a
     `docker stop $(docker ps -a -q)`
 - Remove all containers
     `docker rm $(docker ps -a -q)`
+- Remove all dangling volumes
+    `docker volume rm $(docker volume ls -qf dangling=true)`
