@@ -11,6 +11,7 @@ from flask import (
 
 from flask_session import Session
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from flask_jwt_extended import JWTManager
 import os
 
@@ -68,8 +69,9 @@ def create_app(test_config=None):
         assert Base
         assert UserCredentials
         assert SessionFiles
-        app.db = create_engine(app.config["SQLALCHEMY_DATABASE_URI"]).connect()
-        Base.metadata.create_all(app.db)
+        engine = create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
+        Base.metadata.create_all(engine)
+        app.Session = sessionmaker(bind=engine)
 
     # JWT manager
     app.jwt = JWTManager(app)

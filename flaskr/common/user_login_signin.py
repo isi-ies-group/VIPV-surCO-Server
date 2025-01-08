@@ -2,7 +2,6 @@ from flaskr.db_tables import UserCredentials
 
 from flask import current_app
 import sqlalchemy
-from sqlalchemy.orm import Session
 from argon2 import PasswordHasher, Type
 
 import os
@@ -41,7 +40,7 @@ def valid_login(usermail: str, *, password=None, passHash=None) -> UserCredentia
     usermail = usermail.lower()
 
     # Get the user's salt from the database
-    with Session(current_app.db) as sql_db:
+    with current_app.Session() as sql_db:
         # get the salt for the user
         user = sql_db.query(UserCredentials).filter_by(email=usermail).first()
 
@@ -96,7 +95,7 @@ def register_user(
     usermail = usermail.lower()
 
     # Check if the user already exists
-    with Session(current_app.db) as sql_db:
+    with current_app.Session() as sql_db:
         user = sql_db.query(UserCredentials).filter_by(email=usermail).first()
     if user is not None:
         raise ValueError("User already exists")
@@ -131,6 +130,6 @@ def register_user(
     except sqlalchemy.exc.DataError as e:
         raise RuntimeError("Invalid data provided") from e
 
-    with Session(current_app.db) as sql_db:
+    with current_app.Session() as sql_db:
         sql_db.add(new_user)
         sql_db.commit()
