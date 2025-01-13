@@ -12,8 +12,15 @@ from flask import (
     request,
     redirect,
     session,
-    current_app,
     jsonify,
+)
+
+from flask_jwt_extended import (
+    create_access_token,
+    jwt_required,
+    get_jwt_identity,
+    set_access_cookies,
+    unset_jwt_cookies,
 )
 # import folium
 
@@ -35,12 +42,13 @@ def is_logged_in():
 
 
 @web_bp.route("/login", methods=["GET", "POST"])
+@jwt_required(optional=True)
 def login():
     """
     This function handles the login page
     """
     # Check if the user is already logged in
-    if "usermail" in session:
+    if get_jwt_identity():
         return redirect("/profile")
 
     if request.method == "GET":  # On GET request, return the login page
@@ -59,9 +67,10 @@ def login():
             return render_template("login.html", error_message="Usuario no registrado")
 
         # If the password is correct, log the user in
-        session["usermail"] = user.email.lower()  # TODO: may consider JWT instead
-
-        return redirect("/profile")
+        access_token = create_access_token(identity=user.email)
+        response = redirect("/profile")
+        set_access_cookies(response, access_token)
+        return response
 
 
 @web_bp.route("/logout", methods=["GET", "POST"])
@@ -69,23 +78,19 @@ def logout():
     """
     Logout to landing page
     """
-    # Log the user out
-    session.pop("usermail", default=None)
-
-    # Check if the user is logged in
-    if "usermail" not in session:
-        return redirect("/")
-
-    return redirect("/")
+    response = redirect("/")
+    unset_jwt_cookies(response)
+    return response
 
 
 @web_bp.route("/signup", methods=["GET", "POST"])
+@jwt_required(optional=True)
 def signup():
     """
     Register a new user
     """
     # Check if the user is already logged in
-    if "usermail" in session:
+    if get_jwt_identity():
         return redirect("/profile")
 
     if request.method == "GET":  # On GET request, return the register page
@@ -114,20 +119,23 @@ def signup():
         except ValueError:
             return render_template("signup.html", error_message="Email ya registrado")
 
-        # Log the user in
-        session["usermail"] = email
-
-        # Redirect to the profile page
-        return redirect("/profile")
+        # Log the user in with JWT token
+        access_token = create_access_token(identity=email)
+        response = redirect("/profile")
+        set_access_cookies(response, access_token)
+        return response
 
 
 @web_bp.route("/profile", methods=["GET"])
+@jwt_required(optional=True)
 def profile():
     """
     Profile page of the user
     """
-    # Check if the user is logged in
-    if "usermail" not in session:
+    current_user = get_jwt_identity()
+
+    # Redirect to login if the user is not logged in
+    if not current_user:
         return redirect("/login")
 
     # Get the user

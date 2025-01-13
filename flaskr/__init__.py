@@ -39,6 +39,7 @@ def create_app(test_config=None):
         SECRET_KEY=SECRET_KEY,  # secret key for sessions
         JWT_SECRET_KEY=JWT_SECRET_KEY,  # secret key to sign JWT tokens
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(minutes=30),  # token expiration time
+        JWT_TOKEN_LOCATION=["headers", "cookies"],  # where to find the token
         SQLALCHEMY_DATABASE_URI=DATABASE_URI,  # database URI
     )
 
@@ -55,6 +56,9 @@ def create_app(test_config=None):
 
     # configuration
     app.config["SESSION_TYPE"] = "filesystem"
+    app.config["JWT_COOKIE_SECURE"] = (
+        True if app.config["SECRET_KEY"] != "dev" else False
+    )
 
     # required to use Google OAuth
     # app.config["GOOGLE_ID"] = GOOGLE_ID
