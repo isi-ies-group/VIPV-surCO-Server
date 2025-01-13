@@ -3,6 +3,7 @@ from flaskr.db_tables import UserCredentials
 from flask import current_app
 import sqlalchemy
 from argon2 import PasswordHasher, Type
+from werkzeug.security import generate_password_hash, check_password_hash
 
 import os
 import base64
@@ -54,8 +55,8 @@ def valid_login(usermail: str, *, password=None, passHash=None) -> UserCredentia
         decoded_salt = base64.b64decode(user.salt)
         passHash = passwordHasher.hash(password, salt=decoded_salt)
 
-    # Check if the passHashes coincide
-    if user.passhash == passHash:
+    # Check if the passHashes coincide (db one is rehashed)
+    if check_password_hash(user.passhash, passHash):
         return user
     else:
         raise ValueError("Invalid password")
@@ -120,6 +121,8 @@ def register_user(
         raise RuntimeError("Either password or (passHash and salt) must be provided")
 
     # Create the user
+    # rehash the hash, so locally we don't store the same hash as client apps
+    passHash = generate_password_hash(passHash)
     try:
         new_user = UserCredentials(
             username=username,
