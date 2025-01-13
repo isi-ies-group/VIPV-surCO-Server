@@ -1,4 +1,5 @@
 from flaskr.db_tables import UserCredentials
+from .user_getters import get_user_by_email
 
 from flask import current_app
 import sqlalchemy
@@ -41,9 +42,7 @@ def valid_login(usermail: str, *, password=None, passHash=None) -> UserCredentia
     usermail = usermail.lower()
 
     # Get the user's salt from the database
-    with current_app.Session() as sql_db:
-        # get the salt for the user
-        user = sql_db.query(UserCredentials).filter_by(email=usermail).first()
+    user = get_user_by_email(usermail)
 
     if user is None:  # User not found
         raise TypeError("User is not registered")
