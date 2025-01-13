@@ -33,6 +33,7 @@ def index():
 
 
 @web_bp.route("/isLoggedIn", methods=["GET"])
+@jwt_required(optional=True)
 def is_logged_in():
     """
     Check if the user is logged in
