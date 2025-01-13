@@ -28,6 +28,12 @@ In the development environment, at project root (where Dockerfile is):
 2. Push to DockerHub repository
 	`docker push echedeyls/vipv-acquisition-server:latest`
 
+Shortcut to run both commands:
+
+```bash
+docker build -t echedeyls/vipv-acquisition-server:latest . && docker push echedeyls/vipv-acquisition-server:latest
+```
+
 Follow the instructions in the `README_SERVER.md` file to deploy the server in a remote server.
 
 ## Docker common commands
