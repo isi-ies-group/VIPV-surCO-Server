@@ -106,11 +106,20 @@ def signup():
             return render_template("signup.html", error_message="Email inválido")
 
         if not CredentialsValidator.validate_password(password):
-            return render_template("signup.html", error_message="Contraseña inválida")
+            return render_template(
+                "signup.html",
+                error_message=(
+                    "Contraseña inválida." + "Debe contener entre 8 y 20 caracteres."
+                ),
+            )
 
         if not CredentialsValidator.validate_username(username):
             return render_template(
-                "signup.html", error_message="Nombre de usuario inválido"
+                "signup.html",
+                error_message=(
+                    "Nombre de usuario inválido. "
+                    + "Debe contener entre 5 y 20 caracteres."
+                ),
             )
 
         # Create the user
