@@ -1,6 +1,11 @@
 from flaskr.web import web_bp
-from flaskr.db_tables import UserCredentials, SessionFiles
-from flaskr.common import CredentialsValidator, user_login_signin
+from flaskr.common_user import (
+    CredentialsValidator,
+    get_user_by_email,
+    valid_login,
+    register_user,
+)
+from flaskr.common_files import get_number_of_files_for_user
 
 from flask import (
     render_template,
@@ -47,7 +52,7 @@ def login():
 
         # Validate login
         try:
-            user = user_login_signin.valid_login(email, password=password)
+            user = valid_login(email, password=password)
         except ValueError:
             return render_template("login.html", error_message="Contraseña incorrecta")
         except TypeError:
@@ -105,9 +110,7 @@ def signup():
 
         # Create the user
         try:
-            user_login_signin.register_user(
-                usermail=email, username=username, password=password
-            )
+            register_user(usermail=email, username=username, password=password)
         except ValueError:
             return render_template("signup.html", error_message="Email ya registrado")
 
@@ -127,17 +130,10 @@ def profile():
     if "usermail" not in session:
         return redirect("/login")
 
-    with current_app.Session() as sql_db:
-        # Get the user's files
-        user = (
-            sql_db.query(UserCredentials)
-            .filter_by(email=session["usermail"].lower())
-            .first()
-        )
-        if user is None:
-            session.pop("usermail", default=None)
-            return redirect("/login")
-        n_files = sql_db.query(SessionFiles).filter_by(user_id=user.id).count()
+    # Get the user
+    user = get_user_by_email(current_user)
+
+    n_files = get_number_of_files_for_user(user)
 
     # TODO: add files to the template
     return render_template("profile.html", user=user, n_files=n_files)
