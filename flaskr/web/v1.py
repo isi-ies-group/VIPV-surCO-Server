@@ -11,7 +11,6 @@ from flask import (
     render_template,
     request,
     redirect,
-    session,
     jsonify,
 )
 
@@ -38,7 +37,7 @@ def is_logged_in():
     """
     Check if the user is logged in
     """
-    return jsonify({"result": ("usermail" in session)}), 200
+    return jsonify({"isLoggedIn": get_jwt_identity() is not None})
 
 
 @web_bp.route("/login", methods=["GET", "POST"])
