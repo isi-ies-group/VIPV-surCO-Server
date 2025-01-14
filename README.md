@@ -35,13 +35,3 @@ docker build -t echedeyls/vipv-acquisition-server:latest . && docker push echede
 ```
 
 Follow the instructions in the `README_SERVER.md` file to deploy the server in a remote server.
-
-## Docker common commands
-- List all containers
-    `docker ps -a`
-- Stop all containers
-    `docker stop $(docker ps -a -q)`
-- Remove all containers
-    `docker rm $(docker ps -a -q)`
-- Remove all dangling volumes
-    `docker volume rm $(docker volume ls -qf dangling=true)`
