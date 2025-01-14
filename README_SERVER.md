@@ -81,3 +81,5 @@ docker compose -f docker-compose.yml up -d
     `docker rm $(docker ps -a -q)`
 - Remove all dangling volumes
     `docker volume rm $(docker volume ls -qf dangling=true)`
+- Remove all images
+    `docker rmi $(docker images -q)`
