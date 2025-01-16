@@ -12,7 +12,7 @@ from flask import (
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, unset_jwt_cookies
 import os
 
 from flaskr.db_tables import (
@@ -39,6 +39,7 @@ def create_app(test_config=None):
         SECRET_KEY=SECRET_KEY,  # secret key for sessions
         JWT_SECRET_KEY=JWT_SECRET_KEY,  # secret key to sign JWT tokens
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(minutes=30),  # token expiration time
+        JWT_TOKEN_LOCATION=["headers", "cookies"],  # where to find the token
         SQLALCHEMY_DATABASE_URI=DATABASE_URI,  # database URI
     )
 
@@ -55,6 +56,9 @@ def create_app(test_config=None):
 
     # configuration
     app.config["SESSION_TYPE"] = "filesystem"
+    app.config["JWT_COOKIE_SECURE"] = (
+        True if app.config["SECRET_KEY"] != "dev" else False
+    )
 
     # required to use Google OAuth
     # app.config["GOOGLE_ID"] = GOOGLE_ID
@@ -84,6 +88,12 @@ def create_app(test_config=None):
     app.register_blueprint(api.v1_bp, url_prefix="/api/v1")
     # Web interface
     app.register_blueprint(web.web_bp, url_prefix="/")
+
+    @app.jwt.expired_token_loader
+    def expired_jwt_token_callback(jwt_header, jwt_payload):
+        response = redirect("/login")
+        unset_jwt_cookies(response)
+        return response
 
     # # Routes
     @app.route("/admin", methods=["GET", "POST"])  # Pagina de administrador

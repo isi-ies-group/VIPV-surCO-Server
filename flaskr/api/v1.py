@@ -1,5 +1,10 @@
-from flaskr.db_tables import UserCredentials, SessionFiles
-from flaskr.common import CredentialsValidator, user_login_signin
+from flaskr.db_tables import SessionFiles
+from flaskr.common_user import (
+    CredentialsValidator,
+    valid_login,
+    register_user,
+    get_user_by_email,
+)
 
 from flask.blueprints import Blueprint
 from flask import request, jsonify, current_app
@@ -55,9 +60,7 @@ def salt():
     if not email:
         return jsonify({"message": "email is required"}), 400
 
-    with current_app.Session() as sql_db:
-        # get the salt for the user
-        user = sql_db.query(UserCredentials).filter_by(email=email.lower()).first()
+    user = get_user_by_email(email)
 
     if not user:
         return jsonify({"message": "User not found"}), 404
@@ -102,7 +105,7 @@ def register():
 
     # register the user
     try:
-        user_login_signin.register_user(
+        register_user(
             usermail=email,
             username=username,
             passHash=passhash,
@@ -150,14 +153,14 @@ def login():
         return jsonify({"message": "All fields are required"}), 400
 
     try:
-        user = user_login_signin.valid_login(email, passHash=passhash)
+        user = valid_login(email, passHash=passhash)
     except TypeError:
         return jsonify({"message": "User not found"}), 404
     except ValueError:
         return jsonify({"message": "Incorrect password"}), 401
 
     # create a random unique token for the user
-    access_token = create_access_token(identity=email.lower(), fresh=True)
+    access_token = create_access_token(identity=user.email, fresh=True)
 
     return jsonify(
         {
@@ -177,12 +180,7 @@ def upload_session_file():
     """
     email_identity = get_jwt_identity()
 
-    with current_app.Session() as sql_db:
-        user = (
-            sql_db.query(UserCredentials)
-            .filter_by(email=email_identity.lower())
-            .first()
-        )
+    user = get_user_by_email(email_identity)
 
     if not user:
         return jsonify({"message": "User not found"}), 400

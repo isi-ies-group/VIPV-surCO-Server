@@ -28,14 +28,10 @@ In the development environment, at project root (where Dockerfile is):
 2. Push to DockerHub repository
 	`docker push echedeyls/vipv-acquisition-server:latest`
 
-Follow the instructions in the `README_SERVER.md` file to deploy the server in a remote server.
+Shortcut to run both commands:
 
-## Docker common commands
-- List all containers
-    `docker ps -a`
-- Stop all containers
-    `docker stop $(docker ps -a -q)`
-- Remove all containers
-    `docker rm $(docker ps -a -q)`
-- Remove all dangling volumes
-    `docker volume rm $(docker volume ls -qf dangling=true)`
+```bash
+docker build -t echedeyls/vipv-acquisition-server:latest . && docker push echedeyls/vipv-acquisition-server:latest
+```
+
+Follow the instructions in the `README_SERVER.md` file to deploy the server in a remote server.

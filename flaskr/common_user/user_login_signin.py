@@ -1,8 +1,10 @@
 from flaskr.db_tables import UserCredentials
+from .user_getters import get_user_by_email
 
 from flask import current_app
 import sqlalchemy
 from argon2 import PasswordHasher, Type
+from werkzeug.security import generate_password_hash, check_password_hash
 
 import os
 import base64
@@ -40,9 +42,7 @@ def valid_login(usermail: str, *, password=None, passHash=None) -> UserCredentia
     usermail = usermail.lower()
 
     # Get the user's salt from the database
-    with current_app.Session() as sql_db:
-        # get the salt for the user
-        user = sql_db.query(UserCredentials).filter_by(email=usermail).first()
+    user = get_user_by_email(usermail)
 
     if user is None:  # User not found
         raise TypeError("User is not registered")
@@ -54,8 +54,8 @@ def valid_login(usermail: str, *, password=None, passHash=None) -> UserCredentia
         decoded_salt = base64.b64decode(user.salt)
         passHash = passwordHasher.hash(password, salt=decoded_salt)
 
-    # Check if the passHashes coincide
-    if user.passhash == passHash:
+    # Check if the passHashes coincide (db one is rehashed)
+    if check_password_hash(user.passhash, passHash):
         return user
     else:
         raise ValueError("Invalid password")
@@ -120,6 +120,8 @@ def register_user(
         raise RuntimeError("Either password or (passHash and salt) must be provided")
 
     # Create the user
+    # rehash the hash, so locally we don't store the same hash as client apps
+    passHash = generate_password_hash(passHash)
     try:
         new_user = UserCredentials(
             username=username,
