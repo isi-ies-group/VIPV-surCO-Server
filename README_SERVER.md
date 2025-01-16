@@ -64,8 +64,7 @@ In the production environment:
 
 ## Updating the web server (assuming the `docker-compose.yml` file was not modified)
 ```bash
-su vipv-user
-cd ~
+su --login vipv-user
 # Pull the image
 docker pull echedeyls/vipv-acquisition-server:latest
 # Restart the server with the new image
