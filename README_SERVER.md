@@ -82,3 +82,36 @@ docker compose -f docker-compose.yml up -d
     `docker volume rm $(docker volume ls -qf dangling=true)`
 - Remove all images
     `docker rmi $(docker images -q)`
+
+
+## Direct database manipulation
+
+This is a walkthrough of how to manage the database of the server.
+
+1. Login as the user that manages the server
+    `su --login vipv-user`
+2. Review the contents of `docker-compose.yml` to confirm the configuration
+    `cat docker-compose.yml`
+3. Use `docker exec` to open a terminal in the db container:
+    `docker exec -it db bash`
+    If this command fails, you may need to check the status of the containers
+    and their names with `docker ps -a`. `db` is the default name of the container
+    in the `docker exec -it <name> <command>` command.
+4. Access the database
+    `psql -U db_user -d vipv_db`
+5. Verifying Database Schema and Tables:
+
+    1. List all available databases:
+        `\l`
+
+    2. Switch to the target database:
+        `\c vipv_db`
+
+    3. View all tables in the schema:
+        `\dt`
+
+### Example: get the user for a given ID
+
+```sql
+SELECT id, username, email FROM "UserCredentials" WHERE id = 1;
+```
