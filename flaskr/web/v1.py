@@ -5,13 +5,15 @@ from flaskr.common_user import (
     valid_login,
     register_user,
 )
-from flaskr.common_files import get_number_of_files_for_user
+from flaskr.common_files import get_files_for_user, get_file_for_user_by_name
 
 from flask import (
     render_template,
     request,
     redirect,
     jsonify,
+    current_app,
+    send_file,
 )
 
 from flask_jwt_extended import (
@@ -22,6 +24,9 @@ from flask_jwt_extended import (
     unset_jwt_cookies,
 )
 # import folium
+
+from pathlib import Path
+from logging import warning
 
 
 @web_bp.route("/", methods=["GET"])
@@ -149,11 +154,46 @@ def profile():
 
     # Get the user
     user = get_user_by_email(current_user)
-
-    n_files = get_number_of_files_for_user(user)
+    user_files = get_files_for_user(user)
 
     # TODO: add files to the template
-    return render_template("profile.html", user=user, n_files=n_files)
+    return render_template(
+        "profile.html", user=user, user_files=user_files, n_files=len(user_files)
+    )
+
+
+@web_bp.route("/profile/download_session", methods=["GET"])
+@jwt_required(optional=False)
+def download_session():
+    """
+    Download a session file with example URL:
+
+    profile/download_session?filename=...
+    """
+    # Get the file id
+    filename = request.args.get("filename")
+    if not filename:
+        return redirect("/profile")
+
+    # Get the user
+    current_user = get_jwt_identity()
+    user = get_user_by_email(current_user)
+
+    # Get the filename from the database
+    file = get_file_for_user_by_name(user, filename)
+    if not file:
+        warning(
+            f"User {user.email} tried to download a file that does not belong to them."
+        )
+        return redirect("/profile")
+
+    # Get the filepath: in the saved sessions dir, /<user_id>/<file_name>
+    filepath = (
+        Path(current_app.instance_path) / "sessions" / str(user.id) / file.filename
+    )
+
+    # Download the file
+    return send_file(filepath, mimetype="text/plain", as_attachment=True)
 
 
 '''  # TODO: use folium to show a map of the user's routes

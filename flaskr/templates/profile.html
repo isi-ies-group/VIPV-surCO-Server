@@ -1,38 +1,80 @@
 {% extends "nav.html" %}
 {% block title %}Perfil{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+{% endblock %}
+
 {% block content %}
-<!DOCTYPE html>
-<link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}">
 <html>
-	<style>
-		.container {
-			max-width: 500px;
-			margin: 0 auto;
-			padding: 20px;
-			background-color: #ffffff;
-			box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-			border-radius: 2%;
-			color:black
-		}
-	</style>
+<style>
+	.container {
+		max-width: 50em;
+		margin: 0 auto;
+		padding: 20px;
+		background-color: #ffffff;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		border-radius: 2%;
+		color: black
+	}
+
+	.file-list {
+		margin-top: 20px;
+	}
+
+	.file-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 10px;
+		border-bottom: 1px solid #ddd;
+	}
+
+	.file-item button {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 5px 10px;
+		border-radius: 3px;
+		cursor: pointer;
+	}
+
+	.file-item button:hover {
+		background-color: #0056b3;
+		color: purple;
+	}
+
+	.logout-form {
+		display: flex;
+		justify-content: flex-end;
+		margin-bottom: 10px;
+		color: rgb(104, 188, 228);
+	}
+</style>
+
 <head>
 	<title>Mi perfil</title>
 </head>
 
 <body>
 	<div class="container">
-		<div class="vertical-container">
-			<div class="vertical-item">
+		<div class="horizontal-container">
+			<div class="horizontal-item">
 				<div class="info">
 					<h2><strong>{{ user.username }}</strong> </h2>
 				</div>
-
 			</div>
-
-			<!--div class="vertical-item">
-			<iframe src="{# url_for('UserMaper', username=user.username) #}" width="400px" height="400"></iframe>
-        	</div-->
+			<div class="horizontal-item" style="flex: 0;">
+				<div class="info">
+					<form class="logout-form" action="{{ url_for('web.logout') }}" method="post">
+						<button type="submit" class="button2">
+							<img src="{{ url_for('static', filename='images/log-out.png') }}" alt="Log out"
+								style="width: 20px; height: 20px; margin-right: 8px;">
+							Cerrar sesión
+						</button>
+					</form>
+				</div>
+			</div>
 		</div>
 		<div class="horizontal-container">
 			<div class="info">
@@ -41,10 +83,14 @@
 			</div>
 		</div>
 
-		<div class="button-container">
-			<form class="logout-form" action="{{ url_for('web.logout') }}" method="post">
-				<button type="submit">Cerrar sesión</button>
-			</form>
+		<div class="file-list">
+			<h3>{% if user_files|length > 0 %}Sesiones subidas{% else %}No hay sesiones subidas{% endif %}</h3>
+			{% for file in user_files %}
+			<div class="file-item">
+				<span>{{ file.filename }}</span>
+				<a href="{{ url_for('web.download_session', filename=file.filename) }}" class="button">Descargar</a>
+			</div>
+			{% endfor %}
 		</div>
 	</div>
 
@@ -53,5 +99,3 @@
 </html>
 
 {% endblock %}
-
-</html>

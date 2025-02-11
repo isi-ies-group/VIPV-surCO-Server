@@ -50,7 +50,6 @@ p {
 }
 
 .logout-form button {
-    background-color: #4bcfc9;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -61,7 +60,7 @@ p {
 }
 
 .logout-form button:hover {
-    background-color: #27df92;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .delete-form {
@@ -231,12 +230,19 @@ ul.mensajes {
 .info {
     margin-top: 10px;
     margin-bottom: 20px;
-    text-align: center;
 }
 
 .horizontal-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center; /* Align items vertically in the center */
+    margin-bottom: 20px;
+}
+
+.horizontal-item {
+    flex: 1; /* Ensure items take equal space */
+    display: flex;
+    align-items: center; /* Align items vertically in the center */
 }
 
 /* Estilos del interruptor (toggle switch) */
@@ -305,7 +311,6 @@ input:checked+.slider:before {
     background-color: transparent;
     border: none;
     box-shadow: none;
-
 }
 
 .switch-form {
