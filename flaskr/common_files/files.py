@@ -15,7 +15,7 @@ def get_sessions_dir() -> Path:
     Path
         Path to the sessions directory.
     """
-    return Path(current_app.config["SESSIONS_DIR"])
+    return Path(current_app.instance_path) / "sessions"
 
 
 def get_sessions_dir_for_user(user: UserCredentials) -> Path:
