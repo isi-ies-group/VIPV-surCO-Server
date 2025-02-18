@@ -5,14 +5,15 @@ from flaskr.common_user import (
     register_user,
     get_user_by_email,
 )
+from flaskr.common_files import (
+    get_sessions_dir_for_user,
+)
 
 from flask.blueprints import Blueprint
 from flask import request, jsonify, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
-
-from pathlib import Path
 
 
 # Create a Blueprint for the API
@@ -202,7 +203,7 @@ def upload_session_file():
 
         # save the file to the server in the instance/sessions/<user-id> folder
         # and save the filename to the database
-        user_sessions_dir = Path(current_app.instance_path) / "sessions" / str(user.id)
+        user_sessions_dir = get_sessions_dir_for_user(user)
         user_sessions_dir.mkdir(parents=True, exist_ok=True)
         filepath = user_sessions_dir / filename
 
