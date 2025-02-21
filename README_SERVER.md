@@ -50,7 +50,7 @@ Another user, `vipv-user`, is created to own the volume where the data sessions 
 In the production environment:
 
 1. Log in to the user that will run the server
-    `su vipv-user`
+    `su --login vipv-user`
 2. Pull the image
     `docker pull echedeyls/vipv-acquisition-server:latest`
 3. Clone the `docker-compose.yml` file from the repository:
