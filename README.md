@@ -34,4 +34,4 @@ Shortcut to run both commands:
 docker build -t echedeyls/vipv-acquisition-server:latest . && docker push echedeyls/vipv-acquisition-server:latest
 ```
 
-Follow the instructions in the `README_SERVER.md` file to deploy the server in a remote server.
+Follow the instructions in the `README_SERVER.md` file to deploy the image in a remote server.
