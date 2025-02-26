@@ -1,49 +1,68 @@
 {% extends "nav.html" %}
-{% block title %}Sobre el programa{% endblock %}
+{% block title %}Sobre {{ app_name }}{% endblock %}
+{% block head %}
+{% endblock %}
 {% block content %}
-<link rel="shortcut icon" href="{{ url_for('static', filename='images/iconardo.png') }}">
-
-<html>
 <header class="major">
-    <h1>Sobre el Programa de Adquisición de Datos sobre Energía Solar en Vehículos</h1>
-    <p>Se trata de una iniciativa de ciencia ciudadana para la evaluación experimental del rédito energético de los colectores solares sobre vehículos.</p>
+    <h1>Sobre {{ app_name_long }}</h1>
+    <p>Una iniciativa de ciencia ciudadana para la evaluación experimental del rédito energético de los
+        colectores solares sobre vehículos.</p>
 </header>
 
-<body>
-    <!-- Main -->
-    <div id="main">
-        <!-- Introduction -->
-        <section id="intro" class="main">
-            <header class="major special">
-                <h2>¿Qué es el Programa de Adquisición de Datos sobre Energía Solar en Vehículos?</h2>
-            </header>
-            <div>
-                <div class="content">
-                    <p>El Programa de Adquisición de Datos sobre Energía Solar en Vehículos es una iniciativa de ciencia ciudadana para la evaluación experimental de la viabilidad de la energía solar como fuente de energía alternativa para vehículos. A través de la instalación de sensores solares en vehículos y la recopilación de datos sobre su rendimiento, el programa busca cuantificar el rendimiento energético que podría producir un techo solar en un vehículo a lo largo de los recorridos que hagan los participantes.</p>
-                    <p>Los participantes en el programa pueden contribuir a la generación de conocimiento científico sobre la eficiencia y la viabilidad de la energía solar en vehículos, así como a la promoción de prácticas sostenibles en el uso de la energía.</p>
-                    <ul class="actions">
-                        <li><a href="/contact" class="button">Contáctanos</a></li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- Agradecimientos y colaboraciones -->
-        <section id="acknowledgements" class="main">
-            <header class="major special">
-                <h2>Agradecimientos y colaboraciones</h2>
-            </header>
+<div id="main">
+    <section id="intro" class="main">
+        <header class="major special">
+            <h2>¿Qué es {{ app_name_long }}?</h2>
+        </header>
+        <div>
             <div class="content">
-                <p>Queremos expresar nuestro agradecimiento a todas las personas y organizaciones que han contribuido al éxito de este programa. Sus esfuerzos y colaboraciones han sido fundamentales para avanzar en nuestra misión de promover la energía solar en vehículos.</p>
-                <ul>
-                    <li>Marcos Velázquez Ruiz - TFG sobre el diseño e implementación de esta web.</li>
-                    <li>Marina Álvarez Hornero - TFG sobre el cliente de Android.</li>
+                <p>{{ app_name }} es una iniciativa de ciencia
+                    ciudadana para la evaluación experimental de la viabilidad de la energía solar como fuente de
+                    energía alternativa para vehículos. A través de la instalación de sensores solares en vehículos y la
+                    recopilación de datos sobre su rendimiento, el programa busca cuantificar el rendimiento energético
+                    que podría producir un techo solar en un vehículo a lo largo de los recorridos que hagan los
+                    participantes.</p>
+                <p>Los participantes en el programa pueden contribuir a la generación de conocimiento científico sobre
+                    la eficiencia y la viabilidad de la energía solar en vehículos, así como a la promoción de prácticas
+                    sostenibles en el uso de la energía.</p>
+                <ul class="actions">
+                    <li><a href="/contact" class="button">Contáctanos</a></li>
                 </ul>
             </div>
-        </section>
-    </div>
-</body>
+        </div>
+    </section>
 
-</html>
+    <section id="acknowledgements" class="main">
+        <header class="major special">
+            <h2>Agradecimientos y colaboraciones</h2>
+        </header>
+        <div class="content">
+            <p>Queremos expresar nuestro agradecimiento a todas las personas y organizaciones que han contribuido al
+                éxito de este programa. Sus esfuerzos y colaboraciones han sido fundamentales para avanzar en nuestra
+                misión de promover la energía solar en vehículos.</p>
+            <ul>
+                <li>Marcos Velázquez Ruiz - TFG sobre el diseño e implementación de esta web.</li>
+                <li>Marina Álvarez Hornero - TFG sobre la aplicación Android.</li>
+            </ul>
+        </div>
+    </section>
 
+    <section id="us" class="main">
+        <header class="major special">
+            <h2>¿Quiénes somos?</h2>
+        </header>
+        <div class="content">
+            <p>Somos un grupo de investigadores del Instituto de Energía Solar de la Universidad
+                Politécnica de Madrid. Nuestro objetivo es promover la investigación y la innovación en el campo de la
+                energía solar y contribuir al desarrollo de soluciones sostenibles para el futuro.</p>
+            <p>Atentamente, el equipo de {{ app_name }}:</p>
+            <ul>
+                <li>Dr. Rebeca Herrero - Investigadora principal</li>
+                <li>Dr. Rubén Núñez - Investigador principal</li>
+                <li>Echedey Luis Álvarez - Desarrollador</li>
+            </ul>
+        </div>
+
+    </section>
+</div>
 {% endblock %}

@@ -1,47 +1,47 @@
 {% extends "nav.html" %}
-{% block title %}Contáctanos{% endblock %}
+{% block title %}Contacto{% endblock %}
+{% block head %}
+{% endblock %}
 {% block content %}
-<link rel="shortcut icon" href="{{ url_for('static', filename='images/iconardo.png') }}">
-
-<html>
 <header class="major">
     <h1>Contáctanos</h1>
     <p></p>
 </header>
 
-<body>
-    <!-- Main -->
-    <div id="main">
-        <!-- Introduction -->
-        <section id="intro" class="main">
+<!-- Main -->
+<div id="main">
+    <!-- Introduction -->
+    <section id="intro" class="main">
+        <header class="major special">
+            <h2>Enlaces al código fuente de nuestro software</h2>
+        </header>
+        <div>
+            <div class="content">
+                <h3>Repositorios en GitHub</h3>
+                <p>Si has encontrado un bug o quieres sugerir algún cambio en alguno de nuestro software, puedes hacerlo
+                    a través de los siguientes enlaces:</p>
+                <ul>
+                    <li><a href="https://github.com/isi-ies-group/VIPV-Data-Crowdsourcing-Client"
+                            target="_blank">Repositorio del cliente en GitHub</a></li>
+                    <li><a href="https://github.com/isi-ies-group/VIPV-Data-Crowdsourcing-Server"
+                            target="_blank">Repositorio del servidor en GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div>
             <header class="major special">
-                <h2>Enlaces al código fuente de nuestro software</h2>
+                <h2>Contáctanos directamente</h2>
             </header>
-            <div>
-                <div class="content">
-                    <h3>Repositorios en GitHub</h3>
-                    <p>Si has encontrado un bug o quieres sugerir algún cambio en alguno de nuestro software, puedes hacerlo a través de los siguientes enlaces:</p>
-                    <ul>
-                        <li><a href="https://github.com/isi-ies-group/VIPV-Data-Crowdsourcing-Client" target="_blank">Repositorio del cliente en GitHub</a></li>
-                        <li><a href="https://github.com/isi-ies-group/VIPV-Data-Crowdsourcing-Server" target="_blank">Repositorio del servidor en GitHub</a></li>
-                    </ul>
-                </div>
+            <div class="content">
+                <p>Si tienes alguna otra duda o sugerencia, puedes contactarnos a través del siguiente correo
+                    electrónico:</p>
+                <p><a
+                        href="mailto:info@ies.upm.es?subject=Contacto%20programa%20de%20adquisición%20VIPV">info@ies.upm.es</a>
+                </p>
+                <p>¡Estaremos encantados de escucharte!</p>
             </div>
-
-            <div>
-                <header class="major special">
-                    <h2>Contáctenos directamente</h2>
-                </header>
-                <div class="content">
-                    <p>Si tienes alguna otra duda o sugerencia, puedes contactarnos a través del siguiente correo electrónico:</p>
-                    <p><a href="mailto:info@ies.upm.es?subject=Contacto%20programa%20de%20adquisición%20VIPV">info@ies.upm.es</a></p>
-                    <p>¡Estaremos encantados de escucharte!</p>
-                </div>
-            </div>
-        </section>
-    </div>
-</body>
-
-</html>
-
+        </div>
+    </section>
+</div>
 {% endblock %}

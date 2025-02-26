@@ -18,10 +18,6 @@ form {
     color: black
 }
 
-h2 {
-    margin-bottom: 0.5em;
-}
-
 p {
     margin-bottom: 1em;
 }
@@ -42,42 +38,12 @@ p {
     color: black
 }
 
-.logout-form {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 10px;
-    color: rgb(104, 188, 228)
-}
-
-.logout-form button {
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    color: black
-}
-
-.logout-form button:hover {
-    background-color: rgba(0, 0, 0, 0);
-}
-
-.delete-form {
-
-    vertical-align: middle;
-}
-
 button {
     color: black;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #4b84cf;
-}
-
-button:hover {
-    background-color: #4dacd1;
 }
 
 input[type="submit"] {
@@ -92,24 +58,6 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
     background-color: #27df92;
-}
-
-
-
-.delete-form button {
-    background-color: #f15549;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    color: black
-}
-
-.delete-form button:hover {
-    background-color: #9c2323;
-    color: black
 }
 
 label,
@@ -305,8 +253,6 @@ input:checked+.slider:before {
     border-radius: 50%;
 }
 
-/* Estilo para ocultar el formulario del interruptor */
-/* Estilos personalizados para el formulario del interruptor */
 .button2 {
     background-color: transparent;
     border: none;
