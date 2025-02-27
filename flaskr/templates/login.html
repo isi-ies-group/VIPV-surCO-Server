@@ -8,16 +8,6 @@
 		text-align: center;
 	}
 
-	.container {
-		max-width: 500px;
-		margin: 0 auto;
-		padding: 20px;
-		background-color: #ffffff;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-		border-radius: 2%;
-		color: black;
-	}
-
 	.error-message {
 		color: #d8000c;
 		background-color: #ffd2d2;
@@ -29,45 +19,14 @@
 		font-weight: bold;
 	}
 
-	input[type="submit"] {
-		display: block;
-		width: 150px;
-		height: 40px;
-		margin-top: 20px;
-		font-size: 16px;
-		font-weight: 700;
-		color: #27df92;
-		background-color: #44afcf;
-		border: none;
-		border-radius: 4px;
-	}
-
-	input[type="password"],
-	input[type="text"],
-	input[type="email"] {
-		display: block;
-		font-size: 16px;
-		font-weight: 700;
-	}
-
-	input[type="submit"]:hover {
-		background-color: #2e8bc0;
-	}
-
 	input,
 	label,
 	form {
 		color: black;
 	}
 
-	a:hover {
-		color: #0a5aee;
-	}
-
-	#main {
-		background-color: #fdfdfd00;
-		color: #636363;
-		border-radius: 0.25em;
+	a {
+		text-decoration: underline;
 	}
 </style>
 {% endblock %}
@@ -77,10 +36,9 @@
 	<p>¡Gracias por volver a {{ app_name_long }}!</p>
 </header>
 
-<!-- Main -->
 <div id="main">
-	<section id="intro" class="main">
-		<div class="container">
+	<section class="main">
+		<div class="content">
 			<form action="" method="post" class="form-big">
 				<label for="email">Correo electrónico:</label>
 				<input type="text" id="email" name="email" required><br>
@@ -92,11 +50,12 @@
 				{% endif %}
 
 				<input type="submit" id="send-signup" name="signup" value="Iniciar sesión" />
-				<p>¿No tienes cuenta aún? <a href="{{ url_for('web.signup') }}">Regístrate aquí</a></p>
+				<p style="margin-top: 1em;">¿No tienes cuenta aún? <a href="{{ url_for('web.signup') }}">Regístrate
+						aquí</a></p>
 
 				<!--a href="/GoogleLogin" class="google-link">
-                    <i class="fab fa-google google-icon">g</i> Continuar con Google
-                </a-->
+					<i class="fab fa-google google-icon">g</i> Continuar con Google
+				</a-->
 			</form>
 		</div>
 	</section>
