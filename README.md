@@ -1,6 +1,14 @@
-# VIPV Data Crowdsourcing Server
+# surCo Server
 
-Server for a community-sourced photovoltaic data collection project.
+Python server for *surCO*, a community-sourced vehicle-integrated photovoltaic data collection project.
+
+## Related projects
+- [Android app](https://github.com/isi-ies-group/VIPV-Data-Crowdsourcing-Client)
+- [Python server](https://github.com/isi-ies-group/VIPV-Data-Crowdsourcing-Server) - you are here
+- [Python package for reading surCO data](https://github.com/isi-ies-group/VIPV-Data-MeasurementsSessionsParsers)
+
+## Contact us
+Feel free to reach out via email or by opening issues if you have any questions or suggestions. You can find us on [GitHub](https://github.com/isi-ies-group).
 
 ## Installation for development
 
