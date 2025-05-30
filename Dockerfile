@@ -1,5 +1,5 @@
 # Use the official Python image from the Docker Hub
-FROM python:3.12-alpine
+FROM python:3.13-alpine
 
 # As Root
 # Copy the requirements file into the container
