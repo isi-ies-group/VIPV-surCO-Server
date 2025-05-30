@@ -14,6 +14,7 @@ from flask import request, jsonify, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
+import json
 
 
 # Create a Blueprint for the API
@@ -99,9 +100,10 @@ def register():
         return jsonify({"message": "All fields are required"}), 400
 
     # validate fields
-    if not CredentialsValidator.validate_username(
-        username
-    ) or not CredentialsValidator.validate_email(email):
+    if not (
+        CredentialsValidator.validate_username(username)
+        and CredentialsValidator.validate_email(email)
+    ):
         return jsonify({"message": "Invalid fields"}), 400
 
     # register the user
@@ -184,7 +186,7 @@ def upload_session_file():
     user = get_user_by_email(email_identity)
 
     if not user:
-        return jsonify({"message": "User not found"}), 400
+        return jsonify({"message": "User not found"}), 401
 
     files_in_form = request.files
     if (len_files := len(files_in_form)) != 1:
@@ -212,6 +214,26 @@ def upload_session_file():
 
         with open(filepath, "w") as f:
             f.write(content)
+
+        with open(filepath, "r") as f:
+            first_line = f.readline().strip()
+        try:
+            session_data = json.loads(first_line)
+            version = session_data.get("version", None)
+            if version is None:
+                return jsonify(
+                    {"message": "Session file does not contain version information"}
+                ), 426
+            if version < current_app.config["CLIENT_SESSION_LEAST_VERSION_NUMBER"]:
+                return jsonify(
+                    {
+                        "message": f"Session file version {version} is not supported. "
+                        + "Minimum required version is "
+                        + f"{current_app.config['CLIENT_SESSION_LEAST_VERSION_NUMBER']}."    # noqa: E501
+                    }
+                ), 426
+        except json.JSONDecodeError:
+            return jsonify({"message": "Invalid session file format"}), 426
 
         # save the filename to the database
         new_file = SessionFiles(user.id, filename)

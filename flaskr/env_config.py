@@ -45,3 +45,16 @@ else:
         + "    Set with DATABASE_URI=<uri>"
     )
     DATABASE_URI = "sqlite:///instance/flaskr.db"
+
+
+# The least version number of the session file format that the server accepts.
+# Clients that do not meet it will be rejected with HTTP code 426
+CLIENT_SESSION_LEAST_VERSION_NUMBER = (
+    int(os.environ.get("CLIENT_SESSION_LEAST_VERSION_NUMBER", "0")),
+)
+if CLIENT_SESSION_LEAST_VERSION_NUMBER == 0:
+    warn(
+        "Consider setting the least session version number accepted by the server "
+        "to enforce known data format received. Set with environment variable:\n"
+        "     CLIENT_SESSION_LEAST_VERSION_NUMBER=<number>\n"
+    )

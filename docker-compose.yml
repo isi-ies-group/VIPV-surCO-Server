@@ -11,6 +11,7 @@ x-db-env: &x-db-env
 x-web-env: &x-web-env
   SECRET_KEY: "my_precious_secret_key"
   JWT_SECRET_KEY: "my_precious_overshared_key"
+  CLIENT_SESSION_LEAST_VERSION_NUMBER: "0"
 
 services:
   web:

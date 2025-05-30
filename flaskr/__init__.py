@@ -24,6 +24,7 @@ from flaskr.env_config import (
     SECRET_KEY,
     JWT_SECRET_KEY,
     DATABASE_URI,
+    CLIENT_SESSION_LEAST_VERSION_NUMBER,
 )
 from flaskr import api
 from flaskr import web
@@ -41,6 +42,8 @@ def create_app(test_config=None):
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(minutes=30),  # token expiration time
         JWT_TOKEN_LOCATION=["headers", "cookies"],  # where to find the token
         SQLALCHEMY_DATABASE_URI=DATABASE_URI,  # database URI
+        # least session version number accepted
+        CLIENT_SESSION_LEAST_VERSION_NUMBER=CLIENT_SESSION_LEAST_VERSION_NUMBER,
     )
 
     if test_config is None:
