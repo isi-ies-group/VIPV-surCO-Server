@@ -54,7 +54,7 @@ In the production environment:
 2. Pull the image
     `docker pull echedeyls/vipv-acquisition-server:latest`
 3. Clone the `docker-compose.yml` file from the repository:
-    `cd ~ && wget https://raw.githubusercontent.com/isi-ies-group/VIPV-Data-Crowdsourcing-Server/refs/heads/main/docker-compose.yml -O docker-compose.yml`
+    `cd ~ && wget https://raw.githubusercontent.com/isi-ies-group/VIPV-surCO-Server/refs/heads/main/docker-compose.yml -O docker-compose.yml`
 4. Modify the `docker-compose.yml` file:
     - Change the `build: .` key to `image: echedeyls/vipv-acquisition-server:latest` to set the image to the one you just pulled. You can do this with the following command:
     `sed -i "s/build: .*/image: echedeyls\/vipv-acquisition-server:latest/" docker-compose.yml`

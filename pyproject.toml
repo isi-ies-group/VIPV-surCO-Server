@@ -1,5 +1,5 @@
 [project]
-name = "VIPV-Data-Crowdsourcing-Server"
+name = "VIPV-surCO-Server"
 version = "0.1.0"
 description = "VIPV feasibility analysis via crowdsourced data - Server"
 dependencies = [
@@ -17,7 +17,7 @@ dev = [
     "Flake8-pyproject",
     "ruff",
 ]
-all = ["VIPV-Data-Crowdsourcing-Server[dev]"]
+all = ["VIPV-surCO-Server[dev]"]
 
 [tool.ruff]
 line-length = 88
