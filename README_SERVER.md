@@ -10,7 +10,7 @@ The server uses a volume to store the database used by the `db` service.
 
 Another volume (bind mount) is used to store the data sessions of the Flask server.
 
-Note that from the start, the server counts with an administrator user provided by CESVIMA.
+Note that from the start, the server counts with an admin user different from `sudo`.
 
 The admin user requires being in the `docker` group to run Docker commands.
 
