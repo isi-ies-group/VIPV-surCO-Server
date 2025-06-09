@@ -51,10 +51,15 @@
 				<input type="password" id="password" name="password" required><br>
 
 				<label for="password_confirm">Confirmar Contraseña:</label>
-				<input type="password" id="password_confirm" name="password_confirm" required><br>
+				<input type="password" id="password_confirm" name="password_confirm" autocomplete="off" required><br>
 				{% if error_message %}
 				<div class="error-message">{{ error_message }}</div>
 				{% endif %}
+
+				<label for="terms">
+					<input type="checkbox" id="terms" name="terms" required>
+					Acepto los <a href="{{ url_for('web.privacy_policy') }}">términos y condiciones</a>
+				</label>
 
 				<input type="submit" id="send-signup" name="signup" value="Registrar" />
 				<p style="margin-top: 1em;">¿Ya estás registrado? <a href="{{ url_for('web.login') }}">Inicia sesión

@@ -74,3 +74,30 @@ class SessionFiles(Base):
 
     def __repr__(self):
         return f"<File {self.id} : {self.filename}>"
+
+
+class UserClientInfo(Base):
+    """
+    UserClientInfo table model
+
+    Attributes
+    ----------
+    user_id: Integer, primary key, foreign key to UserCredentials.id
+    client_build_number: Integer, not nullable
+
+    See also
+    --------
+    UserCredentials
+       Table model for storing user credentials, referenced by user_id
+    """
+    __tablename__ = "UserClientInfo"
+
+    user_id = Column(Integer, ForeignKey("UserCredentials.id"), primary_key=True)
+    client_build_number = Column(Integer, nullable=False)
+
+    def __init__(self, user_id, client_build_number):
+        self.user_id = user_id
+        self.client_build_number = client_build_number
+
+    def __repr__(self):
+        return f"<Client {self.id} : {self.client_build_number}"
