@@ -125,21 +125,21 @@ def create_app(test_config=None):
         return response
 
     # # Routes
-    @app.route("/admin", methods=["GET", "POST"])  # Pagina de administrador
-    def admin():
-        if "authenticated" in session:
-            # El usuario ya está autenticado, mostrar la página admin
-            mensajes = get_flashed_messages(with_categories=True)
-            return render_template("admin.html", mensajes=mensajes)
-        else:
-            # El usuario no está autenticado, verificar la contraseña
-            if request.method == "POST":
-                password = request.form["password"]
-                if password == SECRET_KEY:  # TODO: change to a different password
-                    session["authenticated"] = True
-                    return redirect(url_for("admin"))
-                else:
-                    flash("Contraseña incorrecta", "error")
-        return render_template("admin.html")
+    # @app.route("/admin", methods=["GET", "POST"])  # Pagina de administrador
+    # def admin():
+    #     if "authenticated" in session:
+    #         # El usuario ya está autenticado, mostrar la página admin
+    #         mensajes = get_flashed_messages(with_categories=True)
+    #         return render_template("admin.html", mensajes=mensajes)
+    #     else:
+    #         # El usuario no está autenticado, verificar la contraseña
+    #         if request.method == "POST":
+    #             password = request.form["password"]
+    #             if password == SECRET_KEY:  # TODO: change to a different password
+    #                 session["authenticated"] = True
+    #                 return redirect(url_for("admin"))
+    #             else:
+    #                 flash("Contraseña incorrecta", "error")
+    #     return render_template("admin.html")
 
     return app  # Return the app instance (end of create_app factory function)
