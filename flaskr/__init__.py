@@ -63,7 +63,30 @@ def create_app(test_config=None):
     app.config["SESSION_TYPE"] = "filesystem"
     app.config["JWT_COOKIE_SECURE"] = app.config["SECRET_KEY"] != "dev"
 
+    # resources & config created on startup
+    # privacy policy populated versions and last-updated date
+    privacy_policy_path = (
+        Path(app.root_path) / app.template_folder / "privacy-policy"
     )
+    with (
+        (privacy_policy_path / "privacy-policy-conf.json")
+        .resolve()
+        .open("r", encoding="utf-8") as privacy_policy_file
+    ):
+        privacy_policy_json = json.load(privacy_policy_file)
+    with app.app_context():
+        app.config["PRIVACY_POLICY"] = {
+            "last-updated": privacy_policy_json["last-updated"],
+            "texts": {
+                lang_id: render_template(
+                    f"privacy-policy/privacy-policy-{lang_id}.jinja2",
+                    last_updated=privacy_policy_json["last-updated"],
+                )
+                for lang_id in privacy_policy_json["available-languages"]
+            },
+        }
+    del privacy_policy_json
+    del privacy_policy_path
 
     # required to use Google OAuth
     # app.config["GOOGLE_ID"] = GOOGLE_ID

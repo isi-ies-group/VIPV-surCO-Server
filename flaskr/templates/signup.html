@@ -56,6 +56,11 @@
 				<div class="error-message">{{ error_message }}</div>
 				{% endif %}
 
+				<label for="terms">
+					<input type="checkbox" id="terms" name="terms" required>
+					Acepto los <a href="{{ url_for('web.privacy_policy') }}">términos y condiciones</a>
+				</label>
+
 				<input type="submit" id="send-signup" name="signup" value="Registrar" />
 				<p style="margin-top: 1em;">¿Ya estás registrado? <a href="{{ url_for('web.login') }}">Inicia sesión
 						aquí</a></p>

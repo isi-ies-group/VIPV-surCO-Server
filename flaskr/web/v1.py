@@ -17,6 +17,8 @@ from flask import (
     redirect,
     jsonify,
     send_file,
+    Response,
+    current_app,
 )
 
 from flask_jwt_extended import (
@@ -224,3 +226,20 @@ def contact():
     Contact page
     """
     return render_template("contact.html")
+
+
+@web_bp.route("/privacy-policy", methods=["GET"])
+def privacy_policy():
+    language = request.args.get("lang", "en")
+
+    policy = (
+        current_app.config["PRIVACY_POLICY"]["texts"][language]
+        or current_app.config["PRIVACY_POLICY"]["texts"]["en"]
+    )
+    last_updated = current_app.config["PRIVACY_POLICY"]["last-updated"]
+    filename = f"privacy_policy_{language}_{last_updated}.txt"
+    return Response(
+        policy,
+        mimetype="text/plain",
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
+    )

@@ -109,13 +109,6 @@ mark {
 	color: inherit;
 }
 
-
-input,
-select,
-textarea {
-	appearance: none;
-}
-
 /* Basic */
 
 @media screen and (max-width: 480px) {
@@ -2061,17 +2054,6 @@ select {
 
 textarea {
 	padding: 0.75em 1em;
-}
-
-input[type="checkbox"],
-input[type="radio"] {
-	appearance: none;
-	display: block;
-	float: left;
-	margin-right: -2em;
-	opacity: 0;
-	width: 1em;
-	z-index: -1;
 }
 
 input[type="checkbox"]+label,

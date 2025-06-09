@@ -15,6 +15,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 import json
+import time
 
 
 # Create a Blueprint for the API
@@ -87,6 +88,7 @@ def salt():
     user = get_user_by_email(email)
 
     if not user:
+        time.sleep(1.5)
         return jsonify({"message": "User not found"}), 404
 
     return jsonify({"passSalt": user.salt}), 200
@@ -267,7 +269,7 @@ def upload_session_file():
                     {
                         "message": f"Session file version {version} is not supported. "
                         + "Minimum required version is "
-                        + f"{current_app.config['CLIENT_SESSION_LEAST_VERSION_NUMBER']}."    # noqa: E501
+                        + f"{current_app.config['CLIENT_SESSION_LEAST_VERSION_NUMBER']}."  # noqa: E501
                     }
                 ), 426
         except json.JSONDecodeError:
@@ -280,3 +282,35 @@ def upload_session_file():
             sql_db.commit()
 
         return jsonify({"message": "Session file uploaded successfully"}), 201
+
+
+@v1_bp.route("/privacy-policy", methods=["GET"])
+def privacy_policy():
+    """
+    Get the privacy policy text in the requested language.
+
+    Query parameters
+    ----------------
+    lang: str (optional, default: "en")
+        The language code for the privacy policy text. Supported languages are
+        defined in the app configuration.
+
+    Response data
+    -------------
+    {
+        "content": "string",
+        "last_updated": "string",
+        "language": "string"
+    }
+    """
+    language = request.args.get("lang", "en")
+
+    if language not in current_app.config["PRIVACY_POLICY"]["texts"]:
+        language = "en"  # Fallback to English
+
+    content = current_app.config["PRIVACY_POLICY"]["texts"][language]
+    last_updated = current_app.config["PRIVACY_POLICY"]["last-updated"]
+
+    return jsonify(
+        {"content": content, "last_updated": last_updated, "language": language}
+    ), 200
