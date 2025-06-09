@@ -21,16 +21,38 @@ import json
 v1_bp = Blueprint("api", __name__)
 
 
-@v1_bp.route("/isUp", methods=["GET"])
-def is_up():
+@v1_bp.route("/up", methods=["GET"])
+def up():
     """
     Check if the API is up.
+
+    Response data
+    -------------
+    {
+        "message": "API v1 is up",
+        "privacy_policy_last_updated": "string",
+        "client_build_number_minimal": int,
+        "client_build_number_deprecated": int
+
 
     Returns
     -------
     200: API is up
     """
-    return jsonify({"message": "API is up"}), 200
+    return jsonify(
+        {
+            "message": "API v1 is up",
+            "privacy_policy_last_updated": current_app.config["PRIVACY_POLICY"][
+                "last-updated"
+            ],
+            "client_build_number_minimal": current_app.config[
+                "CLIENT_BUILD_NUMBER_MINIMAL"
+            ],
+            "client_build_number_deprecated": current_app.config[
+                "CLIENT_BUILD_NUMBER_DEPRECATED"
+            ],
+        }
+    ), 200
 
 
 @v1_bp.route("/salt", methods=["GET"])
@@ -131,7 +153,8 @@ def login():
     ------------
     {
         "email": "string",
-        "passHash": "string"
+        "passHash": "string",
+        "app_build_number": "string"
     }
 
     Returns
@@ -141,19 +164,33 @@ def login():
         {
             "username": "string",
             "access_token": "string",
-            "validity": int
+            "validity": int,
+            "deprecated_client": bool  # True if the client is deprecated
         }
 
     400: All fields are required
     401: Incorrect password
     404: User not found
+    426: Client version too old
     """
     data = request.get_json()
     email = data.get("email")
     passhash = data.get("passHash")
+    app_build_number = int(data.get("app_build_number"))
 
     if not email or not passhash:
         return jsonify({"message": "All fields are required"}), 400
+
+    if app_build_number < current_app.config["CLIENT_BUILD_NUMBER_MINIMAL"]:
+        return jsonify(
+            {
+                "message": "Client version too old. "
+                + f"Minimum required version is {current_app.config['CLIENT_BUILD_NUMBER_MINIMAL']}."  # noqa: E501
+            }
+        ), 426
+    client_is_deprecated = (
+        app_build_number <= current_app.config["CLIENT_BUILD_NUMBER_DEPRECATED"]
+    )
 
     try:
         user = valid_login(email, passHash=passhash)
@@ -170,6 +207,7 @@ def login():
             "username": user.username,
             "access_token": access_token,
             "validity": current_app.config["JWT_ACCESS_TOKEN_EXPIRES"].total_seconds(),
+            "deprecated_client": client_is_deprecated,
         }
     ), 200
 

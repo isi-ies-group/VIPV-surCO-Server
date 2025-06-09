@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Loads the configuration from the environment variables.
+These are normally set from docker-compose.yml to configure behaviour.
 """
 
 import os
@@ -12,7 +13,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", default=None)
 if SECRET_KEY is None:
     warn(
         "Configuration pending: No secret key found.\n"
-        + "    Set with SECRET_KEY=<key>"
+        "    Set with SECRET_KEY=<key>"
     )
     SECRET_KEY = "dev"
 
@@ -23,7 +24,7 @@ if JWT_SECRET_KEY is None:
     # lock for the creation of the secret key
     warn(
         "Configuration pending: No JWT secret key found.\n"
-        + "    Set with JWT_SECRET_KEY=<key>"
+        "    Set with JWT_SECRET_KEY=<key>"
     )
     JWT_SECRET_KEY = "dev"
 
@@ -42,19 +43,25 @@ elif DATABASE_URI := os.environ.get("DATABASE_URI", default=None):
 else:
     warn(
         "Configuration pending: No database URI found.\n"
-        + "    Set with DATABASE_URI=<uri>"
+        "    Set with DATABASE_URI=<uri>"
     )
     DATABASE_URI = "sqlite:///instance/flaskr.db"
 
-
-# The least version number of the session file format that the server accepts.
-# Clients that do not meet it will be rejected with HTTP code 426
-CLIENT_SESSION_LEAST_VERSION_NUMBER = (
-    int(os.environ.get("CLIENT_SESSION_LEAST_VERSION_NUMBER", "0")),
-)
-if CLIENT_SESSION_LEAST_VERSION_NUMBER == 0:
+# Version admitted by the server, to enforce users to upgrade
+CLIENT_BUILD_NUMBER_MINIMAL = os.environ.get("CLIENT_BUILD_NUMBER_MINIMAL", "")
+if CLIENT_BUILD_NUMBER_MINIMAL == "":
     warn(
-        "Consider setting the least session version number accepted by the server "
-        "to enforce known data format received. Set with environment variable:\n"
-        "     CLIENT_SESSION_LEAST_VERSION_NUMBER=<number>\n"
+        "Configuration pending: No minimal required client build version set.\n"
+        "Will be set to 0; all client versions allowed.\n"
+        "    Set with CLIENT_BUILD_NUMBER_MINIMAL=<n>"
     )
+    CLIENT_BUILD_NUMBER_MINIMAL = "0"
+
+CLIENT_BUILD_NUMBER_DEPRECATED = os.environ.get("CLIENT_BUILD_NUMBER_DEPRECATED", "")
+if CLIENT_BUILD_NUMBER_DEPRECATED == "":
+    warn(
+        "Configuration pending: No minimal required client build version set.\n"
+        "Will be set to 0; all client versions allowed.\n"
+        "    Set with CLIENT_BUILD_NUMBER_DEPRECATED=<n>"
+    )
+    CLIENT_BUILD_NUMBER_DEPRECATED = "0"

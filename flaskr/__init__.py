@@ -13,18 +13,22 @@ from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from flask_jwt_extended import JWTManager, unset_jwt_cookies
+from pathlib import Path
 import os
+import json
 
 from flaskr.db_tables import (
     Base,
     UserCredentials,
     SessionFiles,
+    UserClientInfo,
 )
 from flaskr.env_config import (
     SECRET_KEY,
     JWT_SECRET_KEY,
     DATABASE_URI,
-    CLIENT_SESSION_LEAST_VERSION_NUMBER,
+    CLIENT_BUILD_NUMBER_MINIMAL,
+    CLIENT_BUILD_NUMBER_DEPRECATED,
 )
 from flaskr import api
 from flaskr import web
@@ -43,13 +47,11 @@ def create_app(test_config=None):
         JWT_TOKEN_LOCATION=["headers", "cookies"],  # where to find the token
         SQLALCHEMY_DATABASE_URI=DATABASE_URI,  # database URI
         # least session version number accepted
-        CLIENT_SESSION_LEAST_VERSION_NUMBER=CLIENT_SESSION_LEAST_VERSION_NUMBER,
+        CLIENT_BUILD_NUMBER_MINIMAL=int(CLIENT_BUILD_NUMBER_MINIMAL),
+        CLIENT_BUILD_NUMBER_DEPRECATED=int(CLIENT_BUILD_NUMBER_DEPRECATED),
     )
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile("config.py", silent=True)
-    else:
+    if test_config:
         # load the test config if passed in
         app.config.from_mapping(test_config)
 
@@ -59,8 +61,8 @@ def create_app(test_config=None):
 
     # configuration
     app.config["SESSION_TYPE"] = "filesystem"
-    app.config["JWT_COOKIE_SECURE"] = (
-        True if app.config["SECRET_KEY"] != "dev" else False
+    app.config["JWT_COOKIE_SECURE"] = app.config["SECRET_KEY"] != "dev"
+
     )
 
     # required to use Google OAuth
@@ -76,6 +78,7 @@ def create_app(test_config=None):
         assert Base
         assert UserCredentials
         assert SessionFiles
+        assert UserClientInfo
         engine = create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
         Base.metadata.create_all(engine)
         app.Session = sessionmaker(bind=engine)
