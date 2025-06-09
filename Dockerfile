@@ -1,11 +1,10 @@
 # Use the official Python image from the Docker Hub
 FROM python:3.13-alpine
 
-# As Root
+# As Root from the start
 # Copy the requirements file into the container
 COPY requirements.txt .
 
-# As Root
 # Install the dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -35,7 +34,7 @@ RUN chmod 744 instance
 # Define the volume
 VOLUME ["/vipv-server/instance/sessions"]
 
-# Expose the port the app runs on
+# Expose the port the app runs on to the outside world
 EXPOSE 5000
 
 # Define the command to run the application with gunicorn

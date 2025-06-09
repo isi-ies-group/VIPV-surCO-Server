@@ -51,7 +51,7 @@
 				<input type="password" id="password" name="password" required><br>
 
 				<label for="password_confirm">Confirmar Contraseña:</label>
-				<input type="password" id="password_confirm" name="password_confirm" required><br>
+				<input type="password" id="password_confirm" name="password_confirm" autocomplete="off" required><br>
 				{% if error_message %}
 				<div class="error-message">{{ error_message }}</div>
 				{% endif %}
