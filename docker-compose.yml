@@ -16,7 +16,7 @@ x-web-env: &x-web-env
   # and prompt the user to update if necessary.
   # Set to 0 to disable the check.
   CLIENT_BUILD_NUMBER_MINIMAL: ""  # client with less than this build number will be required to update
-  CLIENT_BUILD_NUMBER_DEPRECATED: ""  # client with less than this build number will be recommended to update
+  CLIENT_BUILD_NUMBER_DEPRECATED: ""  # client with less than or equal to this build number will be recommended to update
 
 services:
   web:
