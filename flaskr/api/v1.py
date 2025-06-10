@@ -255,26 +255,6 @@ def upload_session_file():
         with open(filepath, "w") as f:
             f.write(content)
 
-        with open(filepath, "r") as f:
-            first_line = f.readline().strip()
-        try:
-            session_data = json.loads(first_line)
-            version = session_data.get("version", None)
-            if version is None:
-                return jsonify(
-                    {"message": "Session file does not contain version information"}
-                ), 426
-            if version < current_app.config["CLIENT_SESSION_LEAST_VERSION_NUMBER"]:
-                return jsonify(
-                    {
-                        "message": f"Session file version {version} is not supported. "
-                        + "Minimum required version is "
-                        + f"{current_app.config['CLIENT_SESSION_LEAST_VERSION_NUMBER']}."  # noqa: E501
-                    }
-                ), 426
-        except json.JSONDecodeError:
-            return jsonify({"message": "Invalid session file format"}), 426
-
         # save the filename to the database
         new_file = SessionFiles(user.id, filename)
         with current_app.Session() as sql_db:
