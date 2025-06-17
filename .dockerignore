@@ -1,12 +1,15 @@
 ## Exclude files and directories specific to this project
 # Only keep dependencies requirements.txt
+# Dependencies for develpment
 requirements-dev.txt
-# Pinned dependencies, for failure tracing
+# Diagnostic requirements to update gradually from a known point
 requirements-pinned.txt
 # Ignore the virtual environment and local runs
 venv/
 instance/
 flask_session/
+# Ignore test suites
+test*/
 
 ## Common dockerignore for base Python
 # Ignore Python cache files

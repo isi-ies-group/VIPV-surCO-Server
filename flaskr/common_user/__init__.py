@@ -7,6 +7,8 @@ from .user_credentials_validator import (  # noqa: F401
 )
 
 from . user_login_signin import (  # noqa: F401
+    salt_and_hash_password,
+    hash_password,
     valid_login,
     register_user,
 )
