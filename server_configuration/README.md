@@ -46,6 +46,11 @@ Another user, `vipv-user`, is created to own the volume where the data sessions 
     sudo chown -R vipv-user:vipv-group /home/vipv-user/sessions
     ```
 
+### Nginx configuration file for the surCO server (web + api)
+
+At `/etc/nginx/sites-available/surCO_app`, view file `surCO_app`
+And create a simlink `ln -s ../sites-available/surCO_app .` from `/etc/nginx/sites-enabled`
+
 ## Deployment (if `docker-compose.yml` was modified)
 In the production environment:
 
