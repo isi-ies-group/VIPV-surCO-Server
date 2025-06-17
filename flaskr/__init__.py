@@ -46,6 +46,9 @@ def create_app(test_config=None):
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(minutes=30),  # token expiration time
         JWT_TOKEN_LOCATION=["headers", "cookies"],  # where to find the token
         SQLALCHEMY_DATABASE_URI=DATABASE_URI,  # database URI
+        # flask-session configuration
+        SESSION_PERMANENT=False,  # session won't be permanent
+        SESSION_TYPE="cachelib",
         # least session version number accepted
         CLIENT_BUILD_NUMBER_MINIMAL=int(CLIENT_BUILD_NUMBER_MINIMAL),
         CLIENT_BUILD_NUMBER_DEPRECATED=int(CLIENT_BUILD_NUMBER_DEPRECATED),

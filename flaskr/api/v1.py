@@ -14,7 +14,6 @@ from flask import request, jsonify, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
-import json
 import time
 
 
@@ -178,11 +177,12 @@ def login():
     data = request.get_json()
     email = data.get("email")
     passhash = data.get("passHash")
-    app_build_number = int(data.get("app_build_number"))
+    app_build_number = data.get("app_build_number")
 
-    if not email or not passhash:
+    if not (email and passhash and app_build_number):
         return jsonify({"message": "All fields are required"}), 400
 
+    app_build_number = int(app_build_number)
     if app_build_number < current_app.config["CLIENT_BUILD_NUMBER_MINIMAL"]:
         return jsonify(
             {
@@ -220,6 +220,22 @@ def upload_session_file():
     """
     Upload a file to the server.
     This endpoint should be used with Content-Type: multipart/form-data.
+
+    Request data
+    ------------
+    The file should be sent as a form-data field named "file".
+    The file should be a text file with the session data.
+    The filename should be unique and should not contain any special characters.
+    The file will be saved in the instance/sessions/<user-id> folder.
+    The filename will be saved in the database.
+    The user must be authenticated with a valid JWT token.
+
+    Returns
+    -------
+    201: Session file uploaded successfully
+    400: File is required or only one file is allowed
+    401: User not found (if the JWT token is invalid or user does not exist)
+    409: File already exists
     """
     email_identity = get_jwt_identity()
 

@@ -24,3 +24,13 @@ line-length = 88
 
 [tool.flake8]
 max-line-length = 88
+
+[tool.pytest]
+addopts = "-ra -q"
+testpaths = [
+    "test",
+    #  "test_runtime",  # this one is designed to be run manually 
+]
+filterwarnings = [
+    "ignore::UserWarning",
+]
