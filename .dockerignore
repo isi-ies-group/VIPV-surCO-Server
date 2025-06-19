@@ -10,6 +10,10 @@ instance/
 flask_session/
 # Ignore test suites
 test*/
+# Ignore "other" folder
+other/
+# Ignore server configuration files
+server_configuration/
 
 ## Common dockerignore for base Python
 # Ignore Python cache files
