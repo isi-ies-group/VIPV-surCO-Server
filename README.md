@@ -20,9 +20,7 @@ Feel free to reach out via email or by opening issues if you have any questions 
     Other Python versions may work too.
 2. For development, you may not need to set environment variables, but keep in mind they are heavily used in the Docker configuration for local testing and deployment.
 3. Run the server for debugging:
-    ```bash
-    python -m flask --app flaskr run --host=0.0.0.0 --debug
-    ```
+    `python -m flask --app flaskr run --host=0.0.0.0 --debug`
 
 ## Docker development
 - Build and deploy the server:
