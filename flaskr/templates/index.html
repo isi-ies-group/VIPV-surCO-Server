@@ -3,10 +3,18 @@
 {% block title %}Inicio{% endblock %}
 
 {% block head %}
+<style>
+	.provider-logo {
+		max-width: 100%;
+		max-height: 48px;
+		width: 100%;
+		object-fit: contain;
+		margin-right: 12px;
+	}
+</style>
 {% endblock %}
 
 <body class="is-preload">
-
 	<div id="wrapper">
 
 		{% block content %}
@@ -19,7 +27,8 @@
 				<div>
 					<div class="content">
 						<p>Bienvenidos al programa de adquisición de datos sobre el potencial del recurso fotovoltaico
-							en vehículos en zonas urbanas. Esta es una iniciativa llevada a cabo por el Instituto de Energía Solar de la
+							en vehículos en zonas urbanas. Esta es una iniciativa llevada a cabo por el Instituto de
+							Energía Solar de la
 							Universidad Politécnica de Madrid. Nuestra misión es evaluar el impacto energético de
 							integrar paneles en los vehículos privados, según las rutas que haga cada usuari@.</p>
 						<ul class="actions">
@@ -34,9 +43,36 @@
 				<header class="major">
 					<h2>Cómo colaborar</h2>
 				</header>
+				<h3>Descarga la app</h3>
+				<!-- Descarga la app section -->
+				<div class="card-grid">
+					<div class="card-grid-card">
+						<a href="https://play.google.com/store/apps/details?id=es.upm.ies.surco" target="_blank"
+							rel="noopener noreferrer">
+							<img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+								alt="Google Play" class="provider-logo">
+							<h3>Instalar con Google Play</h3>
+						</a>
+					</div>
+					<div class="card-grid-card">
+						<a href="obtainium://add/https://github.com/isi-ies-group/VIPV-surCO-Client" target="_blank"
+							rel="noopener noreferrer">
+							<img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png"
+								alt="Obtainium" class="provider-logo">
+							<h3>Abrir con Obtainium</h3>
+						</a>
+					</div>
+					<div class="card-grid-card">
+						<a href="https://github.com/isi-ies-group/VIPV-surCO-Client/releases" target="_blank"
+							rel="noopener noreferrer">
+							<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+								alt="GitHub" class="provider-logo">
+							<h3>Descargar desde GitHub</h3>
+						</a>
+					</div>
+				</div>
 				<ol style="text-align: left;">
 					<h3>Instrucciones</h3>
-					<li>Descarga la app "VIPV Acquisition Program" desde la Play Store.</li>
 					<li>Crea una cuenta o <a href="register">regístrate aquí</a>.</li>
 					<li>Coloca los sensores en las superficies del vehículo.</li>
 					<li>Inicia la medida en la app.</li>
