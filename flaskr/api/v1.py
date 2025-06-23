@@ -33,7 +33,7 @@ def up():
         "privacy_policy_last_updated": "string",
         "client_build_number_minimal": int,
         "client_build_number_deprecated": int
-
+    }
 
     Returns
     -------
@@ -170,9 +170,28 @@ def login():
         }
 
     400: All fields are required
+
+        {
+            "message": "All fields are required"
+        }
+
     401: Incorrect password
+
+        {
+            "message": "Incorrect password"
+        }
+
     404: User not found
+
+        {
+            "message": "User not found"
+        }
+
     426: Client version too old
+
+        {
+            "message": "Client version too old. Minimum required version is <number>."
+        }
     """
     data = request.get_json()
     email = data.get("email")
