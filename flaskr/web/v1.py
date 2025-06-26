@@ -172,7 +172,7 @@ def download_session():
     """
     Download a session file with example URL:
 
-    profile/download_session?filename=...
+    /profile/download_session?filename=...
     """
     # Get the file id
     requested_filename = request.args.get("filename")
@@ -197,6 +197,26 @@ def download_session():
     # Download the file
     return send_file(filepath, mimetype="text/plain", as_attachment=True)
 
+
+@web_bp.route("/profile/session_map", methods=["GET"])
+@jwt_required(optional=True)
+def session_map():
+    """
+    Session map page of the user
+    """
+    # Check if the user is logged in
+    if not get_jwt_identity():
+        return redirect("/login")
+
+    # Get the user
+    current_user = get_jwt_identity()
+    user = get_user_by_email(current_user)
+
+    # Get the sessions for the user
+    user_files = get_files_for_user(user)
+
+    # Render the map page with the user's files
+    return render_template("session_map.html", user_files=user_files)
 
 '''  # TODO: use folium to show a map of the user's routes
 @web_bp.route("/profile/map", methods=["GET"])
