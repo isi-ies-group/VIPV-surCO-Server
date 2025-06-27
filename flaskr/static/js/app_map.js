@@ -61,7 +61,7 @@ async function loadData(filename) {
         return;
     }
 
-    document.getElementById('status').textContent = 'Loading data...';
+    document.getElementById('status').textContent = 'Cargando datos...';
 
     // Clear previous data
     clearMapData();
@@ -121,7 +121,7 @@ function finalizeProcessing() {
 
     // Add title
     const title = L.DomUtil.create('h3', 'filter-title', filterContainer);
-    title.textContent = 'Filter Beacons';
+    title.textContent = 'Filtrar Balizas';
     title.style.fontWeight = 'bold';
     title.style.color = '#333';
     title.style.marginTop = '0';
@@ -172,12 +172,12 @@ function finalizeProcessing() {
     topRow.style.gap = '8px';
 
     const showAll = L.DomUtil.create('button', '', topRow);
-    showAll.innerHTML = '<i class="fa fa-eye"></i> Show All';
+    showAll.innerHTML = '<i class="fa fa-eye"></i> Ver Todas';
     showAll.style.padding = '3px 8px';
     showAll.style.fontSize = '12px';
 
     const hideAll = L.DomUtil.create('button', '', topRow);
-    hideAll.innerHTML = '<i class="fa fa-eye-slash"></i> Hide All';
+    hideAll.innerHTML = '<i class="fa fa-eye-slash"></i> Ocultar Todas';
     hideAll.style.padding = '3px 8px';
     hideAll.style.fontSize = '12px';
 
@@ -187,7 +187,7 @@ function finalizeProcessing() {
     bottomRow.style.justifyContent = 'center';
 
     const toggleChecked = L.DomUtil.create('button', '', bottomRow);
-    toggleChecked.innerHTML = '<i class="fa fa-toggle-on"></i> Toggle Checked';
+    toggleChecked.innerHTML = '<i class="fa fa-toggle-on"></i> Invertir selección';
     toggleChecked.style.padding = '3px 8px';
     toggleChecked.style.fontSize = '12px';
 
@@ -273,7 +273,7 @@ function finalizeProcessing() {
         }
     });
 
-    document.getElementById('status').textContent = 'Data loaded successfully';
+    document.getElementById('status').textContent = 'Información cargada correctamente.';
 }
 
 function createPopupContent(point) {
