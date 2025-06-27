@@ -130,11 +130,6 @@ html {
 	box-sizing: inherit;
 }
 
-body {
-	background-color: #4e8eee;
-	background-image: url("images/overlay.png"), linear-gradient(45deg, #00B894 15%, #0A79DF 85%);
-}
-
 body.is-preload *,
 body.is-preload *:before,
 body.is-preload *:after {
@@ -145,7 +140,7 @@ body.is-preload *:after {
 /* Type */
 
 body {
-	background-color: #4e8eee;
+	background-color: #1867b7;
 	color: rgba(255, 255, 255, 0.95);
 }
 
@@ -2046,8 +2041,6 @@ input[type="radio"]+label {
 	display: inline-block;
 	font-size: 1em;
 	font-weight: 300;
-	padding-left: 2.4em;
-	padding-right: 0.75em;
 	position: relative;
 }
 
@@ -3422,12 +3415,7 @@ body.is-preload #header.alt .logo {
 	padding: 5em 5em 3em 5em;
 	width: calc(100% + 2em);
 	margin: 0 0 3em -2em;
-	color: black
-}
-
-#footer-text {
-	font-size: 14px;
-	color: #000000;
+	color: rgba(247, 247, 247, 0.95)
 }
 
 #footer>* {

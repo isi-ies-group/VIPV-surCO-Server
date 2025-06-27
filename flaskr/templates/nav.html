@@ -47,38 +47,7 @@
     height: 3px;
     background-color: #fff;
     border-radius: 5px;
-    transition: 0.2s ease left;
-  }
-
-
-  #navGlobal a:nth-child(1):hover~#indicator {
-    left: 5%;
-
-    background: linear-gradient(130deg, yellow, red);
-  }
-
-  #navGlobal a:nth-child(2):hover~#indicator {
-    left: 25%;
-
-    background: linear-gradient(130deg, #00e2ff, #89ff00);
-  }
-
-  #navGlobal a:nth-child(3):hover~#indicator {
-    left: 52%;
-
-    background: linear-gradient(130deg, purple, palevioletred)
-  }
-
-  #navGlobal a:nth-child(4):hover~#indicator {
-    left: 80%;
-
-    background: linear-gradient(130deg, #00e2ff, #89ff00);
-  }
-
-
-  .hidden {
-    display: none;
-    /* Oculta el botón de inicio de sesión */
+    transition: 0.2s ease left, width 0.2s cubic-bezier(.4, 0, .2, 1);
   }
 </style>
 <header id="header">
@@ -86,7 +55,7 @@
     <a href="/">Inicio</a>
     <a href="/about">Iniciativa</a>
     <a href="/contact">Contáctanos</a>
-    <a class="login hidden" id="loginButton" href="/login">Iniciar Sesión</a>
+    <a id="loginButton" href="/login">Iniciar Sesión</a>
     <div id="indicator"></div>
   </nav>
 </header>
@@ -104,8 +73,8 @@
         </style>
 
         <ul class="icons">
-          <li><a href="https://github.com/isi-ies-group/VIPV-surCO-Server"
-              class="icon brands fa-github alt"><span class="label">GitHub</span></a></li>
+          <li><a href="https://github.com/isi-ies-group/surCO-Solar-Urban-Recource-Collaboration" class="icon brands fa-github alt"><span
+                class="label">GitHub</span></a></li>
         </ul>
       </section>
       <p class="footer-text">
@@ -130,7 +99,6 @@
 
 
 <script>
-
   // Obtiene el botón de inicio de sesión
   const loginButton = document.getElementById('loginButton');
 
@@ -139,48 +107,57 @@
     .then(response => response.json())
     .then(data => {
       if (data.isLoggedIn) {
-        loginButton.classList.remove('hidden'); // Muestra el botón
-        loginButton.innerHTML = '<a href="/profile">Perfil</a>';
-      } else {
-        loginButton.classList.remove('hidden'); // Muestra el botón
-        loginButton.innerHTML = '<a href="/login">Iniciar Sesión</a>';
+        loginButton.href = "/profile";
+        loginButton.textContent = "Perfil";
       }
     })
     .catch(error => {
       console.error('Error al verificar el registro:', error);
     });
 
-  const navLinks = document.querySelectorAll('#navGlobal a');
-  const indicator = document.getElementById('indicator');
-
-  navLinks.forEach((link) => {
-    link.addEventListener('click', (event) => {
-      event.preventDefault(); // Evita el comportamiento predeterminado del enlace
-      const selectedLink = event.target;
-      const linkRect = selectedLink.getBoundingClientRect();
-      const linkPosition = linkRect.left - navLinks[0].getBoundingClientRect().left;
-      const linkWidth = linkRect.width;
-      const indicatorPosition = linkPosition + (linkWidth / 2) - (indicator.offsetWidth / 2);
-
-      indicator.style.left = `${indicatorPosition}px`;
-
-      // Almacena la posición del enlace seleccionado en el almacenamiento local del navegador
-      localStorage.setItem('selectedLinkPosition', indicatorPosition);
-
-      // Realiza la redirección a la página asociada después de 500 ms (ajustable)
-      setTimeout(() => {
-        window.location.href = selectedLink.href;
-      }, 500);
-    });
-  });
-
-  // Verifica si hay una posición de enlace seleccionada almacenada y actualiza la posición del indicador en la carga de la página
   window.addEventListener('DOMContentLoaded', () => {
-    const storedPosition = localStorage.getItem('selectedLinkPosition');
-    if (storedPosition) {
-      indicator.style.left = `${storedPosition}px`;
+    const navLinks = document.querySelectorAll('#navGlobal a');
+    const indicator = document.getElementById('indicator');
+    let selectedIdx = parseInt(localStorage.getItem('selectedLinkIndex')) || 0;
+
+    function updateIndicator(idx, instant = false) {
+      const link = navLinks[idx];
+      if (!link) return;
+      if (instant) indicator.style.transition = 'none';
+      const navRect = link.parentElement.getBoundingClientRect();
+      const linkRect = link.getBoundingClientRect();
+      indicator.style.width = `${linkRect.width}px`;
+      indicator.style.left = `${linkRect.left - navRect.left}px`;
+      if (instant) {
+        // Force reflow to apply the style instantly
+        void indicator.offsetWidth;
+        indicator.style.transition = 'left 0.2s ease, width 0.2s cubic-bezier(.4,0,.2,1)';
+      }
     }
+
+    // Set indicator instantly on load
+    updateIndicator(selectedIdx, true);
+
+    navLinks.forEach((link, idx) => {
+      link.addEventListener('click', (e) => {
+        localStorage.setItem('selectedLinkIndex', idx);
+        selectedIdx = idx;
+        updateIndicator(idx);
+        setTimeout(() => { window.location.href = link.href; }, 200);
+        e.preventDefault();
+      });
+    });
+
+    // MutationObserver for loginButton text/content changes
+    const loginButton = document.getElementById('loginButton');
+    if (loginButton) {
+      new MutationObserver(() => {
+        navLinks.forEach((l, i) => {
+          if (l === loginButton && selectedIdx === i) updateIndicator(i, true);
+        });
+      }).observe(loginButton, { childList: true, characterData: true, subtree: true });
+    }
+
+    window.addEventListener('resize', () => updateIndicator(selectedIdx));
   });
-
-
 </script>
