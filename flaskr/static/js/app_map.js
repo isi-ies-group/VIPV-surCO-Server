@@ -18,6 +18,26 @@ const beaconColors = [
     '#00FFFF', '#FFA500', '#800080', '#008000', '#000080'
 ];
 
+// Helper to calculate color intensity of each data point
+const colorSaturationValueHigh = 1900;
+const colorSaturationValueLow = 400;
+function getIntensityColor(baseColor, dataValue) {
+    // Normalize data between colorSaturationValueLow-colorSaturationValueHigh (0-100%)
+    const normalized = Math.min(Math.max((dataValue - colorSaturationValueLow) / (colorSaturationValueHigh - colorSaturationValueLow), 0), 1);
+
+    // Convert hex to RGB
+    const r = parseInt(baseColor.substr(1, 2), 16);
+    const g = parseInt(baseColor.substr(3, 2), 16);
+    const b = parseInt(baseColor.substr(5, 2), 16);
+
+    // Apply intensity
+    const intensityR = Math.round(r * normalized);
+    const intensityG = Math.round(g * normalized);
+    const intensityB = Math.round(b * normalized);
+
+    return `rgb(${intensityR}, ${intensityG}, ${intensityB})`;
+}
+
 // Store beacon data and layers
 let beaconData = {};
 let beaconLayers = {};
@@ -253,11 +273,12 @@ function finalizeProcessing() {
 
             const path = new Polyline(simplifiedPoints, { color }).addTo(layerGroup);
 
-            // Add all markers
+            // Add all markers, color intensity relates to point data value
             validPoints.forEach(point => {
+                const intensityColor = getIntensityColor(color, point.data);
                 const marker = new CircleMarker([point.latitude, point.longitude], {
                     radius: 5,
-                    fillColor: color,
+                    fillColor: intensityColor,
                     color: '#000',
                     weight: 1,
                     opacity: 1,
@@ -280,6 +301,7 @@ function createPopupContent(point) {
     return `
         <b>Beacon ID:</b> ${point.beacon_id}<br>
         <b>Time:</b> ${point.localized_timestamp}<br>
+        <b>Value:</b> ${point.data}<br>
         <b>Latitude:</b> ${point.latitude.toFixed(6)}<br>
         <b>Longitude:</b> ${point.longitude.toFixed(6)}<br>
         <b>Azimuth:</b> ${point.azimuth.toFixed(2)}°
