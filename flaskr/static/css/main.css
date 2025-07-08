@@ -2873,7 +2873,7 @@ table.alt tbody tr td {
 /* Header */
 
 #header {
-	padding: 5em 5em 1em 5em;
+	padding: 5em 0 1em 0;
 	text-align: center;
 }
 
@@ -2911,7 +2911,7 @@ table.alt tbody tr td {
 @media screen and (max-width: 1280px) {
 
 	#header {
-		padding: 4em 4em 0.1em 4em;
+		padding: 4em 0 0.1em 0;
 	}
 
 	#header.alt {
@@ -2923,7 +2923,7 @@ table.alt tbody tr td {
 @media screen and (max-width: 980px) {
 
 	#header {
-		padding: 4em 3em 0.1em 3em;
+		padding: 4em 0 0.1em 0;
 	}
 
 	#header.alt {
@@ -2935,7 +2935,7 @@ table.alt tbody tr td {
 @media screen and (max-width: 736px) {
 
 	#header {
-		padding: 3em 2em 0.1em 2em;
+		padding: 3em 0 0.1em 0;
 	}
 
 	#header p {
@@ -2959,7 +2959,7 @@ table.alt tbody tr td {
 @media screen and (max-width: 480px) {
 
 	#header {
-		padding: 3em 1.5em 0.1em 1.5em;
+		padding: 3em 0 0.1em 0;
 	}
 
 	#header.alt {
@@ -2971,7 +2971,7 @@ table.alt tbody tr td {
 @media screen and (max-width: 360px) {
 
 	#header {
-		padding: 2.5em 1em 0.1em 1em;
+		padding: 2.5em 0 0.1em 0;
 	}
 
 	#header.alt {
