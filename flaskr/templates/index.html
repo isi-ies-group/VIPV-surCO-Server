@@ -11,6 +11,94 @@
 		object-fit: contain;
 		margin-right: 12px;
 	}
+
+	.instructions-gallery {
+		display: flex;
+		flex-direction: column;
+		gap: 40px;
+		margin: 2.5em 0 2.5em 0;
+		align-items: stretch;
+	}
+
+	.instruction-step {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		background: #fff;
+		border-radius: 16px;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
+		padding: 28px 24px 20px 24px;
+		max-width: 900px;
+		width: 100%;
+		min-height: 320px;
+		max-height: 320px;
+		margin: 0 auto;
+		transition: box-shadow 0.2s;
+		gap: 32px;
+		box-sizing: border-box;
+	}
+
+	.instruction-step:hover {
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16);
+	}
+
+	.instruction-step img {
+		width: 220px;
+		height: 220px;
+		object-fit: contain;
+		border-radius: 12px;
+		background: #f6f6f6;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+		margin-bottom: 0;
+		flex-shrink: 0;
+	}
+
+	.step-caption {
+		text-align: left;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		height: 100%;
+		overflow: hidden;
+	}
+
+	.step-caption strong {
+		display: block;
+		margin-bottom: 8px;
+		color: #2c3e50;
+		font-size: 1.18em;
+	}
+
+	.step-caption p {
+		margin: 0 0 8px 0;
+		font-size: 1.08em;
+		color: #444;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	@media (max-width: 900px) {
+		.instruction-step {
+			flex-direction: column;
+			align-items: center;
+			max-width: 98vw;
+			width: 100%;
+			padding: 16px 8px 12px 8px;
+			gap: 16px;
+			min-height: 320px;
+			max-height: 320px;
+		}
+
+		.instruction-step img {
+			width: 140px;
+			height: 140px;
+		}
+
+		.step-caption {
+			text-align: center;
+		}
+	}
 </style>
 {% endblock %}
 
@@ -71,27 +159,60 @@
 						</a>
 					</div>
 				</div>
-				<ol style="text-align: left;">
-					<h3>Instrucciones</h3>
-					<li>Crea una cuenta en la app o <a href="register">regístrate aquí</a> e inicia sesión.</li>
-					<li>Coloca los sensores en las superficies del vehículo.</li>
-					<li>Inicia la sesión de mediciones en la app.</li>
-					<li>Rellena los campos de descripción de tus balizas:
-						<ul>
-							<li>Inclinación de la baliza: en el sentido de antes, puedes medirlo con una aplicación de inclinación.</li>
-							<li>Superficie del vehículo; donde está colocada (el capó, una puerta, un casco)</li>
-							<li>Descripción: para aclarar información de cada baliza que pueda ser relevante.</li>
-						</ul>
-					</li>
-					<li>Cuando hayas finalizado el recorrido, para la sesión.</li>
-					<li>La sesión se subirá al servidor y podrás consultarla desde tu perfil. Además, el personal investigador podrá analizar el potencial energético de tu ruta - se te informará más adelante sobre este análisis.</li>
-				</ol>
+				<!-- Application how to use -->
+				<div id="instructions" class="instructions-gallery">
+					<h3>Guía de uso de la aplicación</h3>
+					<div class="instruction-step">
+						<div class="step-caption">
+							<strong>1. Coloca los sensores</strong>
+							<p>Pon los sensores en las superficies del vehículo donde quieras medir.</p>
+						</div>
+						<img src="{{ url_for('static', filename='images/app-instructions/10_put_sensors_on_car.png') }}"
+							alt="Coloca los sensores" />
+					</div>
+					<div class="instruction-step">
+						<div class="step-caption">
+							<strong>2. Inicia la sesión</strong>
+							<p>Presiona el botón para <b>Iniciar sesión</b> que se encuentra en la parte inferior.</p>
+						</div>
+						<img src="{{ url_for('static', filename='images/app-instructions/21_start_session.png') }}"
+							alt="Inicia la sesión" />
+					</div>
+					<div class="instruction-step">
+						<div class="step-caption">
+							<strong>3. Configura cada baliza</strong>
+							<p>Haz clic en cada baliza para editar sus datos.</p>
+						</div>
+						<img src="{{ url_for('static', filename='images/app-instructions/30_click_beacon_config.png') }}"
+							alt="Configura balizas" />
+					</div>
+					<div class="instruction-step">
+						<div class="step-caption">
+							<strong>4. Rellena los campos</strong>
+							<p>Indica la superficie sobre la que está la baliza y su inclinación.</p>
+							<p>La inclinación la puedes medir apoyando el móvil sobre la baliza y presionando
+								<b>Medir</b>
+							</p>
+						</div>
+						<img src="{{ url_for('static', filename='images/app-instructions/40_beacon_fields_config.png') }}"
+							alt="Rellena campos baliza" />
+					</div>
+					<div class="instruction-step">
+						<div class="step-caption">
+							<strong>5. Finaliza la sesión</strong>
+							<p>Cuando hayas finalizado el recorrido, finaliza la sesión.
+							</p>
+						</div>
+						<img src="{{ url_for('static', filename='images/app-instructions/51_stop_session.png') }}"
+							alt="Finaliza la sesión" />
+					</div>
+				</div>
 
 				<footer class="major">
-					<ul class="actions special">
-						<p><strong>¡Anímate a participar y ayúdanos a avanzar en nuestra misión de promover la energía
+					<h3 class="actions special">
+						<p><strong>¡Anímate a participar y ayúdanos a avanzar en nuestra misión de integrar la energía
 								fotovoltaica!</strong></p>
-					</ul>
+					</h3>
 				</footer>
 			</section>
 
