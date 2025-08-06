@@ -7,9 +7,8 @@ const tiles = new TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 }).addTo(map);
 
 // Optimization variables
-const CHUNK_SIZE = 1000; // Process 1000 rows at a time
-const MAX_POINTS_PER_BEACON = 5000; // Limit points to prevent memory issues
-const MARKER_CLUSTER_RADIUS = 30; // Cluster radius in pixels
+const CHUNK_SIZE = 1000; // CSV rows to process at a time
+const MAX_POINTS_PER_BEACON = 3000; // Limit points to prevent memory issues
 let worker;
 
 // Color palette for different beacons
@@ -18,9 +17,22 @@ const beaconColors = [
     '#00FFFF', '#FFA500', '#800080', '#008000', '#000080'
 ];
 
+// Global color thresholds, adjustable via UI sliders
+let colorSaturationValueHigh = 1900;
+let colorSaturationValueLow = 400;
+document.getElementById('slider-low').addEventListener('change', (e) => {
+    colorSaturationValueLow = parseInt(e.target.value);
+    document.getElementById('label-low').textContent = colorSaturationValueLow;
+    refreshMarkerColors();
+});
+
+document.getElementById('slider-high').addEventListener('change', (e) => {
+    colorSaturationValueHigh = parseInt(e.target.value);
+    document.getElementById('label-high').textContent = colorSaturationValueHigh;
+    refreshMarkerColors();
+});
+
 // Helper to calculate color intensity of each data point
-const colorSaturationValueHigh = 1900;
-const colorSaturationValueLow = 400;
 function getIntensityColor(baseColor, dataValue) {
     // Normalize data between colorSaturationValueLow-colorSaturationValueHigh (0-100%)
     const normalized = Math.min(Math.max((dataValue - colorSaturationValueLow) / (colorSaturationValueHigh - colorSaturationValueLow), 0), 1);
@@ -118,10 +130,7 @@ function processDataChunk(chunk) {
             beaconLayers[row.beacon_id] = new LayerGroup().addTo(map);
         }
 
-        // Limit the number of points stored per beacon
-        if (beaconData[row.beacon_id].length < MAX_POINTS_PER_BEACON) {
-            beaconData[row.beacon_id].push(row);
-        }
+        beaconData[row.beacon_id].push(row);
     });
 }
 
@@ -265,28 +274,34 @@ function finalizeProcessing() {
         );
 
         if (validPoints.length > 0) {
-            // Create simplified polyline (every 10th point for performance)
+            // Create simplified polyline (only latitude and longitude)
+            // For the path
             const simplifiedPoints = [];
-            for (let i = 0; i < validPoints.length; i += Math.max(1, Math.floor(validPoints.length / 1000))) {
+            for (let i = 0;
+                i < validPoints.length;
+                i += Math.max(1, Math.floor(validPoints.length / MAX_POINTS_PER_BEACON))
+            ) {
                 simplifiedPoints.push([validPoints[i].latitude, validPoints[i].longitude]);
             }
-
             const path = new Polyline(simplifiedPoints, { color }).addTo(layerGroup);
 
-            // Add all markers, color intensity relates to point data value
-            validPoints.forEach(point => {
-                const intensityColor = getIntensityColor(color, point.data);
-                const marker = new CircleMarker([point.latitude, point.longitude], {
+            // For the markers - at this point to plot over path
+            for (let i = 0;
+                i < validPoints.length;
+                i += Math.max(1, Math.floor(validPoints.length / MAX_POINTS_PER_BEACON))
+            ) {
+                const intensityColor = getIntensityColor(color, validPoints[i].data);
+                const marker = new CircleMarker([validPoints[i].latitude, validPoints[i].longitude], {
                     radius: 5,
                     fillColor: intensityColor,
                     color: '#000',
                     weight: 1,
                     opacity: 1,
                     fillOpacity: 0.8
-                }).bindPopup(createPopupContent(point));
+                }).bindPopup(createPopupContent(validPoints[i]));
                 layerGroup.addLayer(marker);
-            });
-
+            }
+            
             // Fit map to show all points from first beacon
             if (index === 0) {
                 map.fitBounds(path.getBounds());
@@ -294,7 +309,14 @@ function finalizeProcessing() {
         }
     });
 
-    document.getElementById('status').textContent = 'Información cargada correctamente.';
+    // Show status message
+    // If any beacon series has more than MAX_POINTS_PER_BEACON, show a warning
+    const hasLargeBeacon = Object.values(beaconData).some(data => data.length > MAX_POINTS_PER_BEACON);
+    if (hasLargeBeacon) {
+        document.getElementById('status').textContent = 'Datos cargados. Se ha limitado a ' + MAX_POINTS_PER_BEACON + ' puntos por beacon.';
+    } else {
+        document.getElementById('status').textContent = 'Información cargada correctamente.';
+    }
 }
 
 function createPopupContent(point) {
@@ -334,6 +356,37 @@ function updateBeaconVisibility() {
         }
     });
 }
+
+// Update data points color intensity based on 
+function refreshMarkerColors() {
+    Object.keys(beaconData).forEach((beaconId, index) => {
+        const color = beaconColors[index % beaconColors.length];
+        const validPoints = beaconData[beaconId].filter(
+            point => !isNaN(point.latitude) && !isNaN(point.longitude)
+        );
+
+        // Clear only CircleMarkers from layerGroup
+        beaconLayers[beaconId].eachLayer(layer => {
+            if (layer instanceof CircleMarker) {
+                beaconLayers[beaconId].removeLayer(layer);
+            }
+        });
+
+        validPoints.forEach(point => {
+            const intensityColor = getIntensityColor(color, point.data);
+            const marker = new CircleMarker([point.latitude, point.longitude], {
+                radius: 5,
+                fillColor: intensityColor,
+                color: '#000',
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).bindPopup(createPopupContent(point));
+            beaconLayers[beaconId].addLayer(marker);
+        });
+    });
+}
+
 
 // Event listeners and initialization
 document.addEventListener('DOMContentLoaded', () => {

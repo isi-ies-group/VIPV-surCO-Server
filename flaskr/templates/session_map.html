@@ -10,6 +10,27 @@
         padding: 0;
     }
 
+    #status {
+        background: rgba(255,255,255,0.9);
+        padding: 8px 20px;
+        border-radius: 12px;
+        font-weight: bold;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        pointer-events: auto;
+        margin-bottom: 10px;
+    }
+
+    #intensity-controls {
+        background: rgba(255,255,255,0.9);
+        padding: 8px 16px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        pointer-events: auto;
+    }
+
     .map-center-container {
         display: flex;
         justify-content: center;
@@ -26,6 +47,29 @@
         max-width: 100vw;
         max-height: 100vh;
     }
+
+    .slider-container {
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        margin-bottom: 10px;
+    }
+
+    .slider-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+    }
+
+    .slider-title {
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    input[type="range"] {
+        width: 100%;
+    }
 </style>
 {% endblock %}
 
@@ -33,21 +77,30 @@
 <div class="container">
     <!-- Controls overlay -->
     <div id="map-controls" style="
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        pointer-events: none;
-        margin-bottom: 1rem;
-    ">
-        <span id="status" style="
-            color: grey;
-            background: rgba(255,255,255,0.9);
-            padding: 8px 20px;
-            border-radius: 12px;
-            font-weight: bold;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            pointer-events: auto;
-        "></span>
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    margin-bottom: 1rem;
+    color: grey;
+">
+        <!-- Status Message (on top) -->
+        <span id="status"></span>
+
+        <!-- Intensity Controls (below) -->
+        <div id="intensity-controls" style="font-size: 70%;">
+            <label>
+                Valor para saturación de intensidad inferior:
+                <input type="range" id="slider-low" min="0" max="2048" step="50" value="400" />
+                <span id="label-low">400</span>
+            </label>
+            <label>
+                Valor para saturación de intensidad superior:
+                <input type="range" id="slider-high" min="0" max="2048" step="50" value="1900" />
+                <span id="label-high">1900</span>
+            </label>
+        </div>
     </div>
     <div class="map-center-container">
         <div id="map"></div>
