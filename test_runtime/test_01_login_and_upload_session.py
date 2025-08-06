@@ -33,6 +33,10 @@ def registered_user_salt(api_base, registered_user):
             "VIPV_2025-06-06T06_42_37.544229Z-2025-06-06T15_06_31.891352Z.txt",
             id="4mb_file",
         ),
+        pytest.param(
+            "VIPV_2025-07-31_13-12-44Z-2025-07-31_21-08-05Z.txt",
+            id="emt01",
+        )
     ],
 )
 def test_login_and_upload_session(

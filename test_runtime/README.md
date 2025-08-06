@@ -9,5 +9,5 @@
     - E.g.:
         - `python -m pytest test_runtime/test_00_register_user.py::test_register_user`
         - `python -m pytest test_runtime/test_01_login_and_upload_session.py`
-        - `python -m pytest test_runtime/test_01_login_and_upload_session.py[4mb_file]`
+        - `python -m pytest test_runtime/test_01_login_and_upload_session.py::test_login_and_upload_session[4mb_file]`
 
